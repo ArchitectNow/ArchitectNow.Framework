@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26403.3
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArchitectNow.Web.Models", "src\ArchitectNow.Web.Models\ArchitectNow.Web.Models.csproj", "{240FD2CA-8BB4-4BED-BF8B-694F70C4B4DC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArchitectNow.Web", "src\ArchitectNow.Web\ArchitectNow.Web.csproj", "{A6A9F971-90F6-436D-B752-BCD49500EB71}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArchitectNow.Web.Sql", "src\ArchitectNow.Web.Sql\ArchitectNow.Web.Sql.csproj", "{E7D015C8-3321-4006-B6B9-5F99677F7717}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArchitectNow.Web.Mongo", "src\ArchitectNow.Web.Mongo\ArchitectNow.Web.Mongo.csproj", "{F12325F6-BC6A-4473-A202-B67A6F2CAE34}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{240FD2CA-8BB4-4BED-BF8B-694F70C4B4DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{240FD2CA-8BB4-4BED-BF8B-694F70C4B4DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{240FD2CA-8BB4-4BED-BF8B-694F70C4B4DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{240FD2CA-8BB4-4BED-BF8B-694F70C4B4DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6A9F971-90F6-436D-B752-BCD49500EB71}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6A9F971-90F6-436D-B752-BCD49500EB71}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6A9F971-90F6-436D-B752-BCD49500EB71}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6A9F971-90F6-436D-B752-BCD49500EB71}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E7D015C8-3321-4006-B6B9-5F99677F7717}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7D015C8-3321-4006-B6B9-5F99677F7717}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7D015C8-3321-4006-B6B9-5F99677F7717}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7D015C8-3321-4006-B6B9-5F99677F7717}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F12325F6-BC6A-4473-A202-B67A6F2CAE34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F12325F6-BC6A-4473-A202-B67A6F2CAE34}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F12325F6-BC6A-4473-A202-B67A6F2CAE34}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F12325F6-BC6A-4473-A202-B67A6F2CAE34}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
