@@ -6,7 +6,7 @@ namespace ArchitectNow.Web.Sql.Configuration
 {
 	static class HangfireExtensions
 	{
-		public static void AddHangfire(this IServiceCollection services, Func<string> getConnectionString, Action<IGlobalConfiguration> setupAction = null)
+		public static void ConfigureHangfire(this IServiceCollection services, Func<string> getConnectionString, Action<IGlobalConfiguration> setupAction = null)
 		{
 			services.AddHangfire(globalConfiguration =>
 			{

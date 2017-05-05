@@ -2,18 +2,19 @@
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Text;
+using ArchitectNow.Web.Filters;
+using ArchitectNow.Web.Models.Security;
 using Autofac;
 using Autofac.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using ArchitectNow.Web.Models.Security;
-using ArchitectNow.Web.Filters;
+using Mindscape.Raygun4Net;
 
 namespace ArchitectNow.Web
 {
-    public class ApiModule : Module
+    public class WebModule : Module
     {
         private int _depth;
 
@@ -23,8 +24,9 @@ namespace ArchitectNow.Web
             builder.RegisterAssemblyTypes(assembly).AsImplementedInterfaces();
 
 			builder.RegisterType<HttpContextAccessor>().As<IHttpContextAccessor>().SingleInstance();
+	        builder.RegisterType<RaygunJobFilter>().AsSelf().InstancePerLifetimeScope();
 
-            builder.RegisterType<GlobalExceptionFilter>().AsSelf().InstancePerLifetimeScope();
+			builder.RegisterType<GlobalExceptionFilter>().AsSelf().InstancePerLifetimeScope();
 			
 	        builder.Register(context =>
 		        {
@@ -48,6 +50,14 @@ namespace ArchitectNow.Web
 		        
 		        return new OptionsWrapper<JwtIssuerOptions>(issuerOptions);
 	        }).As<IOptions<JwtIssuerOptions>>().SingleInstance();
+
+	        builder.Register(context =>
+	        {
+		        var configurationRoot = context.Resolve<IConfigurationRoot>();
+		        var key = configurationRoot["RaygunSettings:ApiKey"];
+		        var raygunClient = new RaygunClient(key);
+		        return raygunClient;
+	        }).AsSelf();
 		}
 
 		protected override void AttachToComponentRegistration(IComponentRegistry componentRegistry,

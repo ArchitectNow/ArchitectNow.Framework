@@ -51,12 +51,7 @@ namespace ArchitectNow.Web.Configuration
 						new StringEnumConverter(true)
 					};
 				});
-
-			services.AddAuthorization(options =>
-			{
-				options.AddPolicy("Approved", builder => builder.RequireClaim("true"));
-			});
-
+			
 			services.Add(ServiceDescriptor.Singleton<IObjectModelValidator, FluentValidationObjectModelValidator>(s =>
 			{
 				var options = s.GetRequiredService<IOptions<MvcOptions>>().Value;

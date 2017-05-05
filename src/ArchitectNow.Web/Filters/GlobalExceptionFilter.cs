@@ -1,19 +1,16 @@
 ﻿using System;
 using ArchitectNow.Web.Services;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.Extensions.Configuration;
 
 namespace ArchitectNow.Web.Filters
 {
     public class GlobalExceptionFilter : IExceptionFilter, IDisposable
     {
-        private readonly IConfiguration _configuration;
-        private readonly IExceptionResultBuilder _exceptionResultBuilder;
+	    private readonly IExceptionResultBuilder _exceptionResultBuilder;
 
-        public GlobalExceptionFilter(IConfiguration configuration, IExceptionResultBuilder exceptionResultBuilder)
+        public GlobalExceptionFilter(IExceptionResultBuilder exceptionResultBuilder)
         {
-            _configuration = configuration;
-            _exceptionResultBuilder = exceptionResultBuilder;
+	        _exceptionResultBuilder = exceptionResultBuilder;
         }
 
         public void Dispose()

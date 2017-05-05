@@ -36,6 +36,7 @@
 		<PackageReference Include="Serilog.Extensions.Logging" Version="1.4.0" />
 		<PackageReference Include="Serilog.Sinks.Async" Version="1.0.1" />
 		<PackageReference Include="Serilog.Sinks.ColoredConsole" Version="2.0.0" />
+		<PackageReference Include="Serilog.Sinks.MongoDB" Version="3.1.0" />
 		<PackageReference Include="Serilog.Sinks.RollingFile" Version="3.3.0" />
 		<PackageReference Include="Serilog.Sinks.Literate" Version="2.1.0" />
 
@@ -44,6 +45,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ArchitectNow.Mongo\ArchitectNow.Mongo.csproj" />
     <ProjectReference Include="..\ArchitectNow.Web.Models\ArchitectNow.Web.Models.csproj" />
     <ProjectReference Include="..\ArchitectNow.Web\ArchitectNow.Web.csproj" />
   </ItemGroup>

@@ -13,7 +13,7 @@ namespace ArchitectNow.Web.Configuration
 			var builder = new ContainerBuilder();
 
 			builder.Register(ctx => configurationRoot).As<IConfigurationRoot>();
-
+			builder.RegisterModule<WebModule>();
 			foreach (var module in modules)
 			{
 				builder.RegisterModule(module);

@@ -1,8 +1,8 @@
 ﻿using System;
+using ArchitectNow.Web.Models.Exceptions;
 using Autofac.Core;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using ArchitectNow.Web.Models.Exceptions;
 
 namespace ArchitectNow.Web.Services
 {

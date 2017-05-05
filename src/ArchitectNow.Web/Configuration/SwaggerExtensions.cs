@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using ArchitectNow.Web.Swagger;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.PlatformAbstractions;
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Swashbuckle.AspNetCore.SwaggerUI;
@@ -15,7 +11,7 @@ namespace ArchitectNow.Web.Configuration
     {
 	    public static void ConfigureSwagger(this IServiceCollection services, string name, Info info, Action<SwaggerGenOptions> setupAction= null)
 	    {
-		    services.ConfigureSwaggerGen(options =>
+		    services.AddSwaggerGen(options =>
 		    {
 			    options.SwaggerDoc(name, info);
 			    options.CustomSchemaIds(type => type.FullName);
