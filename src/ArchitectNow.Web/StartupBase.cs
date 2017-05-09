@@ -119,11 +119,17 @@ namespace ArchitectNow.Web
 
 			app.ConfigureSwagger(SwaggerOptions.Description, ConfigureSwaggerUi);
 
-			app.ConfigureCompression();
+			if (Features.EnableCompression)
+			{
+				app.ConfigureCompression();
+			}
 
 			app.UseMvc();
 
-			app.ConfigureHangfire(ApplicationContainer, ConfigureDashboardOptions);
+			if (Features.UseHangfire)
+			{
+				app.ConfigureHangfire(ApplicationContainer, ConfigureDashboardOptions);
+			}
 
 			appLifetime.ApplicationStopped.Register(() =>
 			{
