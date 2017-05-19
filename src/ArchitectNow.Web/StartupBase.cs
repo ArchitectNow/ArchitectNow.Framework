@@ -15,6 +15,7 @@ using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using SwaggerOptions = ArchitectNow.Web.Models.Options.SwaggerOptions;
+using AutoMapper;
 
 namespace ArchitectNow.Web
 {
@@ -50,6 +51,8 @@ namespace ArchitectNow.Web
 			services.ConfigureOptions();
 
 			services.ConfigureApi();
+
+            services.ConfigureAutomapper(ConfigureAutoMapper);
 
 			if (Features.EnableCompression)
 			{
@@ -90,6 +93,11 @@ namespace ArchitectNow.Web
 		{
 
 		}
+
+        protected virtual void ConfigureAutoMapper(IMapperConfigurationExpression configurationExpression)
+        {
+
+        }
 
 		protected void ConfigureInternal(
 			IApplicationBuilder app,

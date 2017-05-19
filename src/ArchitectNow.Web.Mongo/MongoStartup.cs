@@ -5,6 +5,7 @@ using Autofac;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using AutoMapper;
 
 namespace ArchitectNow.Web.Mongo
 {
@@ -39,5 +40,5 @@ namespace ArchitectNow.Web.Mongo
 			base.ConfigureAutofac(containerBuilder);
 			containerBuilder.RegisterModule<MongoModule>();
 		}
-	}
+    }
 }
