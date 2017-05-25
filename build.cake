@@ -1,4 +1,4 @@
-#tool "GitVersion.CommandLine"
+#tool nuget:?package=GitVersion.CommandLine&version=4.0.0-beta0012
 
 //////////////////////////////////////////////////////////////////////
 // ARGUMENTS
@@ -7,7 +7,7 @@
 var target                  = Argument("target", "Default");
 var configuration           = Argument("configuration", "Release");
 var treatWarningsAsErrors   = Argument("treatWarningsAsErrors", "false");
-var solutionPath            = MakeAbsolute(File(Argument("solutionPath", "./ArchitectNow.Web.sln")));
+var solutionPath            = MakeAbsolute(File(Argument("solutionPath", "./ArchitectNow.Framework.sln")));
 
 //////////////////////////////////////////////////////////////////////
 // PREPARATION
@@ -88,8 +88,18 @@ Task("DotNet-MsBuild-Restore")
 Task("DotNet-MsBuild")
     .IsDependentOn("Restore")
     .Does(() => {
+        //Must be built in correct order
 
-        MSBuild(solutionPath, c => c
+        //Base
+        MSBuild("src/ArchitectNow.Web.Models/ArchitectNow.Web.Models.csproj", c => c
+            .SetConfiguration(configuration)
+            .SetVerbosity(Verbosity.Minimal)
+            .UseToolVersion(MSBuildToolVersion.VS2017)
+            .WithProperty("TreatWarningsAsErrors", treatWarningsAsErrors)
+            .WithTarget("Build")
+        );
+        
+        MSBuild("src/ArchitectNow.Web/ArchitectNow.Web.csproj", c => c
             .SetConfiguration(configuration)
             .SetVerbosity(Verbosity.Minimal)
             .UseToolVersion(MSBuildToolVersion.VS2017)
@@ -97,12 +107,42 @@ Task("DotNet-MsBuild")
             .WithTarget("Build")
         );
 
+        //Mongo
+        MSBuild("src/ArchitectNow.Mongo/ArchitectNow.Mongo.csproj", c => c
+            .SetConfiguration(configuration)
+            .SetVerbosity(Verbosity.Minimal)
+            .UseToolVersion(MSBuildToolVersion.VS2017)
+            .WithProperty("TreatWarningsAsErrors", treatWarningsAsErrors)
+            .WithTarget("Build")
+        );
+
+        MSBuild("src/ArchitectNow.Web.Mongo/ArchitectNow.Web.Mongo.csproj", c => c
+            .SetConfiguration(configuration)
+            .SetVerbosity(Verbosity.Minimal)
+            .UseToolVersion(MSBuildToolVersion.VS2017)
+            .WithProperty("TreatWarningsAsErrors", treatWarningsAsErrors)
+            .WithTarget("Build")
+        );
+
+        //SQL
+
+        /*
+        MSBuild("src/ArchitectNow.Web.Models/ArchitectNow.Web.Models.csproj", c => c
+            .SetConfiguration(configuration)
+            .SetVerbosity(Verbosity.Minimal)
+            .UseToolVersion(MSBuildToolVersion.VS2017)
+            .WithProperty("TreatWarningsAsErrors", treatWarningsAsErrors)
+            .WithTarget("Build")
+        );
+        */
+
 });
 
 Task("DotNet-MsBuild-Pack")
     .IsDependentOn("Build")
     .Does(() => {
-
+       
+       //Base
        MSBuild("src/ArchitectNow.Web.Models/ArchitectNow.Web.Models.csproj", c => c
             .SetConfiguration(configuration)
             .SetVerbosity(Verbosity.Normal)
@@ -119,7 +159,22 @@ Task("DotNet-MsBuild-Pack")
             .WithProperty("NoBuild", "true")
             .WithTarget("Pack"));
 
+        //SQL
+        MSBuild("src/ArchitectNow.Mongo/ArchitectNow.Mongo.csproj", c => c
+            .SetConfiguration(configuration)
+            .SetVerbosity(Verbosity.Normal)
+            .UseToolVersion(MSBuildToolVersion.VS2017)
+            .WithProperty("PackageVersion", versionInfo.NuGetVersionV2)
+            .WithProperty("NoBuild", "true")
+            .WithTarget("Pack"));
 
+        MSBuild("src/ArchitectNow.Web.Mongo/ArchitectNow.Web.Mongo.csproj", c => c
+            .SetConfiguration(configuration)
+            .SetVerbosity(Verbosity.Normal)
+            .UseToolVersion(MSBuildToolVersion.VS2017)
+            .WithProperty("PackageVersion", versionInfo.NuGetVersionV2)
+            .WithProperty("NoBuild", "true")
+            .WithTarget("Pack"));
 });
 
 Task("DotNet-MsBuild-CopyToArtifacts")
@@ -129,6 +184,8 @@ Task("DotNet-MsBuild-CopyToArtifacts")
         EnsureDirectoryExists(artifacts);
         CopyFiles("src/ArchitectNow.Web/bin/" +configuration +"/*.nupkg", artifacts);
         CopyFiles("src/ArchitectNow.Web.Models/bin/" +configuration +"/*.nupkg", artifacts);
+        CopyFiles("src/ArchitectNow.Mongo/bin/" +configuration +"/*.nupkg", artifacts);
+        CopyFiles("src/ArchitectNow.Web.Mongo/bin/" +configuration +"/*.nupkg", artifacts);
 });
 
 Task("DotNet-Test")
@@ -149,7 +206,7 @@ Task("MyGet-Upload-Artifacts")
     .Does(() =>
 {
     foreach(var nupkg in GetFiles(artifacts +"/*.nupkg")) {
-        
+        Information(nupkg);
     }
 });
 
