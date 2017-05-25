@@ -96,6 +96,7 @@ Task("DotNet-MsBuild")
             .SetVerbosity(Verbosity.Minimal)
             .UseToolVersion(MSBuildToolVersion.VS2017)
             .WithProperty("TreatWarningsAsErrors", treatWarningsAsErrors)
+            .WithProperty("AssemblyVersion")
             .WithTarget("Build")
         );
         
@@ -205,8 +206,15 @@ Task("MyGet-Upload-Artifacts")
     .IsDependentOn("Package")    
     .Does(() =>
 {
+    var nugetFeed = "https://www.nuget.org/api/v2/package";
+    var nugetApiKey = "da127e95-968b-452f-b3fb-eb2e3de3586c";
+
     foreach(var nupkg in GetFiles(artifacts +"/*.nupkg")) {
-        Information(nupkg);
+        Information("Pushing: " + nupkg);
+        NuGetPush(nupkg, new NuGetPushSettings {
+            Source = nugetFeed,
+            ApiKey = nugetApiKey
+        });
     }
 });
 

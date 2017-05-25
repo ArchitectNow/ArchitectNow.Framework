@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard1.6;net461</TargetFrameworks>
-    <Version>0.1.0</Version>
     <Authors>ArchitectNow</Authors>
     <Company>ArchitectNow</Company>
     <Product>ArchitectNow.Web.Sql</Product>
@@ -16,6 +15,13 @@
     <Description>ArchitectNow Framework - Web.Sql</Description>
   </PropertyGroup>
 
+  <PropertyGroup>
+	<GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+	<GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
+	<GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+	<GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
+  </PropertyGroup>
+  
   <ItemGroup>
     <PackageReference Include="Autofac" Version="4.5.0" />
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.1.0" />
@@ -59,5 +65,7 @@
     <ProjectReference Include="..\ArchitectNow.Web.Models\ArchitectNow.Web.Models.csproj" />
     <ProjectReference Include="..\ArchitectNow.Web\ArchitectNow.Web.csproj" />
   </ItemGroup>
-
+<ItemGroup>
+		<Compile Include="..\..\VersionAssemblyInfo.cs" Link="VersionAssemblyInfo.cs" />
+	</ItemGroup>
 </Project>
