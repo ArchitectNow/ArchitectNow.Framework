@@ -206,19 +206,33 @@ Task("MyGet-Upload-Artifacts")
     .IsDependentOn("Package")    
     .Does(() =>
 {
-    var nugetFeed = "https://www.nuget.org/api/v2/package";
-    var nugetApiKey = "da127e95-968b-452f-b3fb-eb2e3de3586c";
+    var nugetFeed = "https://www.myget.org/F/architectnow/api/v2/package";
+    var nugetApiKey = "21300101-5bf9-414b-9e4c-e5799c019dc1";
 
     foreach(var nupkg in GetFiles(artifacts +"/*.nupkg")) {
         Information("Pushing: " + nupkg);
         NuGetPush(nupkg, new NuGetPushSettings {
-            Source = nugetFeed,
-            ApiKey = nugetApiKey
+            Source = nugetFeed
+        });
+    }
+});
+
+Task("Nuget-Upload-Artifacts")
+    .IsDependentOn("Package")    
+    .Does(() =>
+{
+    var nugetFeed = "https://www.nuget.org/api/v2/package";
+
+    foreach(var nupkg in GetFiles(artifacts +"/*.nupkg")) {
+        Information("Pushing: " + nupkg);
+        NuGetPush(nupkg, new NuGetPushSettings {
+            Source = nugetFeed
         });
     }
 });
 
 Task("MyGet")        
+    .IsDependentOn("Nuget-Upload-Artifacts")
     .IsDependentOn("MyGet-Upload-Artifacts");
 
 // ************************** //
