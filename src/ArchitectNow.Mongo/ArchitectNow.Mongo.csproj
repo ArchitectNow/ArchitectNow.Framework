@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard1.6;net461</TargetFrameworks>
-    <Version>0.1.0</Version>
     <Authors>ArchitectNow</Authors>
     <Company>ArchitectNow</Company>
     <Product>ArchitectNow.Mongo</Product>
@@ -14,6 +13,13 @@
     <Copyright>Copyright © 2014-2017 ArchitectNow</Copyright>
     <PackageLicenseUrl>https://github.com/ArchitectNow/ArchitectNow.Framework/blob/master/LICENSE</PackageLicenseUrl>
     <Description>ArchitectNow Framework - Mongo</Description>
+  </PropertyGroup>
+  
+  <PropertyGroup>
+	<GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+	<GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
+	<GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+	<GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
   </PropertyGroup>
 
   <ItemGroup>
@@ -29,6 +35,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ArchitectNow.Web.Models\ArchitectNow.Web.Models.csproj" />
+  </ItemGroup>
+  
+  <ItemGroup>
+		<Compile Include="..\..\VersionAssemblyInfo.cs" Link="VersionAssemblyInfo.cs" />
   </ItemGroup>
 
 </Project>
