@@ -1,4 +1,8 @@
 #tool nuget:?package=GitVersion.CommandLine&version=4.0.0-beta0012
+#tool "JetBrains.ReSharper.CommandLineTools"
+#tool nuget:?package=vswhere
+#tool ReSharperReports
+#addin Cake.ReSharperReports
 
 //////////////////////////////////////////////////////////////////////
 // ARGUMENTS
@@ -17,6 +21,7 @@ var testAssemblies          = "./tests/**/bin/" +configuration +"/*.Tests.dll";
 
 var artifacts               = MakeAbsolute(Directory(Argument("artifactPath", "./artifacts")));
 var versionAssemblyInfo     = MakeAbsolute(File(Argument("versionAssemblyInfo", "VersionAssemblyInfo.cs")));
+var analysisReports        = MakeAbsolute(Directory(Argument("analysisReports", "./analysis")));
 
 IEnumerable<FilePath> nugetProjectPaths     = null;
 SolutionParserResult solution               = null;
@@ -38,6 +43,13 @@ Setup(ctx => {
     }
     
     EnsureDirectoryExists(artifacts);
+
+    if(DirectoryExists(analysisReports)) 
+    {
+        DeleteDirectory(analysisReports, true);
+    }
+
+    EnsureDirectoryExists(analysisReports);
     
     var binDirs = GetDirectories(solutionPath.GetDirectory() +@"\src\**\bin");
     var objDirs = GetDirectories(solutionPath.GetDirectory() +@"\src\**\obj");
@@ -85,6 +97,32 @@ Task("DotNet-MsBuild-Restore")
         );
 });
 
+Task("Resharper-Analysis")
+    .IsDependentOn("Build")
+    .Does(() => {
+
+        var msBuildProperties = new Dictionary<string, string>();
+        msBuildProperties.Add("configuration", configuration);
+        msBuildProperties.Add("platform", "AnyCPU");
+
+        InspectCode(solutionPath, new InspectCodeSettings {
+            SolutionWideAnalysis = true,
+            //Profile = "./MySolution.sln.DotSettings",
+            MsBuildProperties = msBuildProperties,
+            OutputFile = analysisReports + "/" + File("inspectcode-output.xml"),
+            ThrowExceptionOnFindingViolations = false
+        });
+});
+
+Task("Resharper-Report")
+    .IsDependentOn("Resharper-Analysis")
+    .Does(() => {
+
+        var input = analysisReports + "/" + File("inspectcode-output.xml");
+        var output = analysisReports + "/" + File("inspectcode-output.html");
+
+        ReSharperReports(input, output);
+});
 Task("DotNet-MsBuild")
     .IsDependentOn("Restore")
     .Does(() => {
@@ -247,6 +285,10 @@ Task("Build")
 Task("Test")
     .IsDependentOn("Build")
     .IsDependentOn("DotNet-Test");
+
+Task("Analysis")    
+    .IsDependentOn("Resharper-Analysis")
+    .IsDependentOn("Resharper-Report");
 
 Task("Package")
     .IsDependentOn("Build")
