@@ -1,50 +1,40 @@
 ﻿using System;
+using System.Reflection;
+using ArchitectNow.Web.Models.Options;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using Swashbuckle.AspNetCore.Swagger;
-using Swashbuckle.AspNetCore.SwaggerGen;
-using Swashbuckle.AspNetCore.SwaggerUI;
+using NJsonSchema;
+using NSwag;
+using NSwag.AspNetCore;
+using NSwag.SwaggerGeneration.WebApi.Processors.Security;
 
 namespace ArchitectNow.Web.Configuration
 {
     public static class SwaggerExtensions
     {
-	    public static void ConfigureSwagger(this IServiceCollection services, string name, Info info, Action<SwaggerGenOptions> setupAction= null)
+	    public static void ConfigureSwagger(this IApplicationBuilder app, Assembly assembly, SwaggerOptions options, Action<SwaggerUiOwinSettings> action)
 	    {
-		    services.AddSwaggerGen(options =>
+		    var swaggerUiOwinSettings = new SwaggerUiOwinSettings
 		    {
-			    options.SwaggerDoc(name, info);
-			    options.CustomSchemaIds(type => type.FullName);
-			    options.DescribeStringEnumsInCamelCase();
-				
-			    setupAction?.Invoke(options);
-		    });
-	    }
+			    DefaultPropertyNameHandling = PropertyNameHandling.CamelCase,
+			    Title = options.Title,
+			    SwaggerRoute = "/docs/v1/swagger.json",
+			    SwaggerUiRoute = "/docs",
+			    UseJsonEditor = true,
+				FlattenInheritanceHierarchy = true,
+				IsAspNetCore = true,
+			    DocumentProcessors =
+			    {
+				    new SecurityDefinitionAppender("Authorization", new SwaggerSecurityScheme
+				    {
+					    Type = SwaggerSecuritySchemeType.ApiKey,
+					    Name = "Authorization",
+					    In = SwaggerSecurityApiKeyLocation.Header
+				    })
+			    }
+		    };
+			action?.Invoke(swaggerUiOwinSettings);
 
-	    public static void ConfigureSwagger(this IApplicationBuilder app, string description, Action<SwaggerUIOptions> setupAction = null)
-	    {
-		    app.UseSwagger(c =>
-		    {
-			    c.RouteTemplate = "docs/{documentName}/swagger.json";
-		    });
-
-		    app.UseSwaggerUI(options =>
-		    {
-			    options.SwaggerEndpoint("/docs/v1/swagger.json", description);
-
-			    options.RoutePrefix = "docs";
-			    //options.SwaggerEndpoint("/docs/v1/swagger.json", "V1 Docs");
-			    options.EnabledValidator();
-			    options.BooleanValues(new object[] { 0, 1 });
-			    options.DocExpansion("list");
-			    options.InjectOnCompleteJavaScript("/swagger-ui/on-complete.js");
-			    options.InjectOnFailureJavaScript("/swagger-ui/on-failure.js");
-			    options.SupportedSubmitMethods(new[] { "get", "post", "put", "patch", "delete" });
-			    options.ShowRequestHeaders();
-			    options.ShowJsonEditor();
-
-				setupAction?.Invoke(options);
-		    });
+		    app.UseSwaggerUi(assembly, swaggerUiOwinSettings);
 	    }
 	}
 }

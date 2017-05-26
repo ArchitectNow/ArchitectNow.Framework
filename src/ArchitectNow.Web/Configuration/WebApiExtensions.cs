@@ -50,14 +50,7 @@ namespace ArchitectNow.Web.Configuration
 						new IsoDateTimeConverter(),
 						new StringEnumConverter(true)
 					};
-				});
-			
-			services.Add(ServiceDescriptor.Singleton<IObjectModelValidator, FluentValidationObjectModelValidator>(s =>
-			{
-				var options = s.GetRequiredService<IOptions<MvcOptions>>().Value;
-				var metadataProvider = s.GetRequiredService<IModelMetadataProvider>();
-				return new FluentValidationObjectModelValidator(metadataProvider, options.ModelValidatorProviders, s.GetRequiredService<IValidatorFactory>());
-			}));
+				}).AddFluentValidation();
 		}
 
 		public static void ConfigureAssets(this IApplicationBuilder app, IConfigurationRoot configurationRoot)

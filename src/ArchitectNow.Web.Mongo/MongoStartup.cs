@@ -5,11 +5,10 @@ using Autofac;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using AutoMapper;
 
 namespace ArchitectNow.Web.Mongo
 {
-	public abstract class MongoStartup : StartupBase
+	public abstract class MongoStartup<TStartup> : StartupBase<TStartup>
 	{
 		protected MongoStartup(IHostingEnvironment env, ILoggerFactory loggerFactory) : base(env, loggerFactory)
 		{

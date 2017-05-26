@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using ArchitectNow.Web.Configuration;
 using ArchitectNow.Web.Models.Options;
 using Autofac;
@@ -11,15 +12,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
-using Swashbuckle.AspNetCore.Swagger;
-using Swashbuckle.AspNetCore.SwaggerGen;
-using Swashbuckle.AspNetCore.SwaggerUI;
 using SwaggerOptions = ArchitectNow.Web.Models.Options.SwaggerOptions;
 using AutoMapper;
+using NSwag.AspNetCore;
 
 namespace ArchitectNow.Web
 {
-	public abstract class StartupBase
+	public abstract class StartupBase<TStartup>
 	{
 		private readonly IConfigurationRoot _configurationRoot;
 		private readonly ILogger<StartupBase> _logger;
@@ -32,7 +31,6 @@ namespace ArchitectNow.Web
 		
 		protected abstract Features Features { get; }
 
-		protected abstract Info SwaggerInfo { get; }
 		protected abstract SwaggerOptions SwaggerOptions { get; }
 
 		protected IConfigurationRoot ConfigurationRoot => _configurationRoot;
@@ -58,8 +56,6 @@ namespace ArchitectNow.Web
 			{
 				services.ConfigureCompression();
 			}
-
-			services.ConfigureSwagger(SwaggerOptions.Name, SwaggerInfo, SetupSwagger);
 			
 			if (Features.UseRaygun)
 			{
@@ -88,12 +84,7 @@ namespace ArchitectNow.Web
 		{
 
 		}
-
-		protected virtual void SetupSwagger(SwaggerGenOptions swaggerGenOptions)
-		{
-
-		}
-
+		
         protected virtual void ConfigureAutoMapper(IMapperConfigurationExpression configurationExpression)
         {
 
@@ -117,7 +108,7 @@ namespace ArchitectNow.Web
 
 			app.ConfigureAssets(configurationRoot);
 
-			app.ConfigureSwagger(SwaggerOptions.Description, ConfigureSwaggerUi);
+			app.ConfigureSwagger(typeof(TStartup).GetTypeInfo().Assembly, SwaggerOptions, ConfigureSwaggerUi);
 
 			if (Features.EnableCompression)
 			{
@@ -146,7 +137,7 @@ namespace ArchitectNow.Web
 			
 		}
 
-		protected virtual void ConfigureSwaggerUi(SwaggerUIOptions swaggerUiOptions)
+		protected virtual void ConfigureSwaggerUi(SwaggerUiOwinSettings swaggerUiOptions)
 		{
 			
 		}
