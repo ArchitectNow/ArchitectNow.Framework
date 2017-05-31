@@ -1,4 +1,4 @@
-﻿namespace ArchitectNow.Web.Models.Validation
+﻿namespace ArchitectNow.Models.Validation
 {
     public class ValidationError
     {

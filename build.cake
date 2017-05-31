@@ -129,7 +129,7 @@ Task("DotNet-MsBuild")
         //Must be built in correct order
 
         //Base
-        MSBuild("src/ArchitectNow.Web.Models/ArchitectNow.Web.Models.csproj", c => c
+        MSBuild("src/ArchitectNow.Models/ArchitectNow.Models.csproj", c => c
             .SetConfiguration(configuration)
             .SetVerbosity(Verbosity.Minimal)
             .UseToolVersion(MSBuildToolVersion.VS2017)
@@ -166,7 +166,7 @@ Task("DotNet-MsBuild")
         //SQL
 
         /*
-        MSBuild("src/ArchitectNow.Web.Models/ArchitectNow.Web.Models.csproj", c => c
+        MSBuild("src/ArchitectNow.Models/ArchitectNow.Models.csproj", c => c
             .SetConfiguration(configuration)
             .SetVerbosity(Verbosity.Minimal)
             .UseToolVersion(MSBuildToolVersion.VS2017)
@@ -182,7 +182,7 @@ Task("DotNet-MsBuild-Pack")
     .Does(() => {
        
        //Base
-       MSBuild("src/ArchitectNow.Web.Models/ArchitectNow.Web.Models.csproj", c => c
+       MSBuild("src/ArchitectNow.Models/ArchitectNow.Models.csproj", c => c
             .SetConfiguration(configuration)
             .SetVerbosity(Verbosity.Normal)
             .UseToolVersion(MSBuildToolVersion.VS2017)
@@ -222,7 +222,7 @@ Task("DotNet-MsBuild-CopyToArtifacts")
 
         EnsureDirectoryExists(artifacts);
         CopyFiles("src/ArchitectNow.Web/bin/" +configuration +"/*.nupkg", artifacts);
-        CopyFiles("src/ArchitectNow.Web.Models/bin/" +configuration +"/*.nupkg", artifacts);
+        CopyFiles("src/ArchitectNow.Models/bin/" +configuration +"/*.nupkg", artifacts);
         CopyFiles("src/ArchitectNow.Mongo/bin/" +configuration +"/*.nupkg", artifacts);
         CopyFiles("src/ArchitectNow.Web.Mongo/bin/" +configuration +"/*.nupkg", artifacts);
 });

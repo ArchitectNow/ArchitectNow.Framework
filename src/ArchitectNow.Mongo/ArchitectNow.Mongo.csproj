@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <PackageReference Include="Autofac" Version="4.6.0" />
+    <PackageReference Include="FluentValidation" Version="7.0.2" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="1.1.2" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="1.1.2" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="1.1.2" />
@@ -32,13 +33,13 @@
     <PackageReference Include="Newtonsoft.Json" Version="10.0.2" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="4.3.0" />
   </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\ArchitectNow.Web.Models\ArchitectNow.Web.Models.csproj" />
-  </ItemGroup>
   
   <ItemGroup>
 		<Compile Include="..\..\VersionAssemblyInfo.cs" Link="VersionAssemblyInfo.cs" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\ArchitectNow.Models\ArchitectNow.Models.csproj" />
   </ItemGroup>
 
 </Project>

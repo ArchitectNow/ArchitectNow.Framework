@@ -1,6 +1,6 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 
-namespace ArchitectNow.Web.Models.Security
+namespace ArchitectNow.Models.Security
 {
 	public class JwtSigningKey: SymmetricSecurityKey
     {

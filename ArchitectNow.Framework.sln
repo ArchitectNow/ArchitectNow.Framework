@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26403.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArchitectNow.Web.Models", "src\ArchitectNow.Web.Models\ArchitectNow.Web.Models.csproj", "{240FD2CA-8BB4-4BED-BF8B-694F70C4B4DC}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArchitectNow.Web", "src\ArchitectNow.Web\ArchitectNow.Web.csproj", "{A6A9F971-90F6-436D-B752-BCD49500EB71}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArchitectNow.Web.Sql", "src\ArchitectNow.Web.Sql\ArchitectNow.Web.Sql.csproj", "{E7D015C8-3321-4006-B6B9-5F99677F7717}"
@@ -19,16 +17,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mongo", "Mongo", "{E2D41269
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sql", "Sql", "{FE53FB7E-4609-4D29-8D77-93C4B6D0A7CD}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArchitectNow.Models", "src\ArchitectNow.Models\ArchitectNow.Models.csproj", "{2019D356-9E38-44F4-B35B-70A1D9582EFC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{240FD2CA-8BB4-4BED-BF8B-694F70C4B4DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{240FD2CA-8BB4-4BED-BF8B-694F70C4B4DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{240FD2CA-8BB4-4BED-BF8B-694F70C4B4DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{240FD2CA-8BB4-4BED-BF8B-694F70C4B4DC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A6A9F971-90F6-436D-B752-BCD49500EB71}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A6A9F971-90F6-436D-B752-BCD49500EB71}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A6A9F971-90F6-436D-B752-BCD49500EB71}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -45,15 +41,19 @@ Global
 		{94F86E1C-65D6-4FDC-9257-54C091A9819E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{94F86E1C-65D6-4FDC-9257-54C091A9819E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{94F86E1C-65D6-4FDC-9257-54C091A9819E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2019D356-9E38-44F4-B35B-70A1D9582EFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2019D356-9E38-44F4-B35B-70A1D9582EFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2019D356-9E38-44F4-B35B-70A1D9582EFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2019D356-9E38-44F4-B35B-70A1D9582EFC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{240FD2CA-8BB4-4BED-BF8B-694F70C4B4DC} = {00A56DCD-AEA5-40E4-AE57-046E684ECC1D}
 		{A6A9F971-90F6-436D-B752-BCD49500EB71} = {00A56DCD-AEA5-40E4-AE57-046E684ECC1D}
 		{E7D015C8-3321-4006-B6B9-5F99677F7717} = {FE53FB7E-4609-4D29-8D77-93C4B6D0A7CD}
 		{F12325F6-BC6A-4473-A202-B67A6F2CAE34} = {E2D41269-A40E-4899-B077-F421310ACBF4}
 		{94F86E1C-65D6-4FDC-9257-54C091A9819E} = {E2D41269-A40E-4899-B077-F421310ACBF4}
+		{2019D356-9E38-44F4-B35B-70A1D9582EFC} = {00A56DCD-AEA5-40E4-AE57-046E684ECC1D}
 	EndGlobalSection
 EndGlobal

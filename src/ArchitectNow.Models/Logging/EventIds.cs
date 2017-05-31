@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 
-namespace ArchitectNow.Web.Models.Logging
+namespace ArchitectNow.Models.Logging
 {
     public class EventIds
     {

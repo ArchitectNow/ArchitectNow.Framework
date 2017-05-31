@@ -65,10 +65,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ArchitectNow.Web.Models\ArchitectNow.Web.Models.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
 		<Compile Include="..\..\VersionAssemblyInfo.cs" Link="VersionAssemblyInfo.cs" />
 	</ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ArchitectNow.Models\ArchitectNow.Models.csproj" />
+  </ItemGroup>
 </Project>

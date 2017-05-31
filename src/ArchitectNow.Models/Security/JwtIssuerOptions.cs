@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.IdentityModel.Tokens;
 
-namespace ArchitectNow.Web.Models.Security
+namespace ArchitectNow.Models.Security
 {
 	public class JwtIssuerOptions
 	{

@@ -63,7 +63,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ArchitectNow.Mongo\ArchitectNow.Mongo.csproj" />
-    <ProjectReference Include="..\ArchitectNow.Web.Models\ArchitectNow.Web.Models.csproj" />
     <ProjectReference Include="..\ArchitectNow.Web\ArchitectNow.Web.csproj" />
   </ItemGroup>
 	
