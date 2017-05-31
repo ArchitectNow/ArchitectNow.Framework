@@ -2,8 +2,8 @@
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Text;
+using ArchitectNow.Models.Security;
 using ArchitectNow.Web.Filters;
-using ArchitectNow.Web.Models.Security;
 using Autofac;
 using Autofac.Core;
 using Microsoft.AspNetCore.Http;

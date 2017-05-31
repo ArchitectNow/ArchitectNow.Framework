@@ -1,4 +1,4 @@
-﻿namespace ArchitectNow.Web.Models.ViewModels
+﻿namespace ArchitectNow.Models.ViewModels
 {
 	public class ApiError
 	{

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net;
 
-namespace ArchitectNow.Web.Models.Exceptions
+namespace ArchitectNow.Models.Exceptions
 {
     public abstract class ApiException : Exception
     {

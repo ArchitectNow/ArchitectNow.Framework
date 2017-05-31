@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Net;
-using ArchitectNow.Web.Models.Validation;
+using ArchitectNow.Models.Validation;
 
-namespace ArchitectNow.Web.Models.Exceptions
+namespace ArchitectNow.Models.Exceptions
 {
     public class ValidationException : ApiException<IEnumerable<ValidationError>>
     {

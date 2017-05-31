@@ -1,5 +1,5 @@
 ﻿using System;
-using ArchitectNow.Web.Models.Exceptions;
+using ArchitectNow.Models.Exceptions;
 using Autofac.Core;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;

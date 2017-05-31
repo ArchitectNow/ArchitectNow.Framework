@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
+using ArchitectNow.Models.Options;
 using ArchitectNow.Web.Configuration;
-using ArchitectNow.Web.Models.Options;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Hangfire;
@@ -12,7 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
-using SwaggerOptions = ArchitectNow.Web.Models.Options.SwaggerOptions;
+using SwaggerOptions = ArchitectNow.Models.Options.SwaggerOptions;
 using AutoMapper;
 using NSwag.AspNetCore;
 

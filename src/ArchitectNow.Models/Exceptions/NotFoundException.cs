@@ -1,6 +1,6 @@
 using System.Net;
 
-namespace ArchitectNow.Web.Models.Exceptions
+namespace ArchitectNow.Models.Exceptions
 {
     public class NotFoundException : ApiException
     {

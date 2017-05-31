@@ -1,4 +1,4 @@
-﻿namespace ArchitectNow.Web.Models.Options
+﻿namespace ArchitectNow.Models.Options
 {
 	public class Features
     {

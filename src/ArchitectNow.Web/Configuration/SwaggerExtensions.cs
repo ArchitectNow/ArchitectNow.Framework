@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Reflection;
-using ArchitectNow.Web.Models.Options;
+using ArchitectNow.Models.Options;
 using Microsoft.AspNetCore.Builder;
 using NJsonSchema;
 using NSwag;
