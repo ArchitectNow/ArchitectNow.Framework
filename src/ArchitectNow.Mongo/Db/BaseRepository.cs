@@ -18,30 +18,54 @@ namespace ArchitectNow.Mongo.Db
 	public abstract class BaseRepository<T> : IBaseRepository<T> where T : BaseDocument
 	{
 		private readonly IValidator<T> _validator;
-		protected ICacheService CacheService { get; }
-		protected DataContext CurrentContext { get; }
-		protected ILogger<T> Logger { get; }
-		protected IMongoDbUtilities DbUtilities { get; }
+
+		private IMongoCollection<T> _collection;
+
+		private string _regionName = "";
+
+		private string _searchRegionName = "";
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="BaseRepository{T}"/> class.
+		///     Initializes a new instance of the <see cref="BaseRepository{T}" /> class.
 		/// </summary>
-		protected BaseRepository(ILogger<T> logger, IMongoDbUtilities mongoDbUtilities, IDataContextService<DataContext> dataContextService, ICacheService cacheService, IValidator<T> validator)
+		protected BaseRepository(ILogger<T> logger, IMongoDbUtilities mongoDbUtilities,
+			IDataContextService<DataContext> dataContextService, ICacheService cacheService, IValidator<T> validator = null)
 		{
-			_validator = validator;
+			_validator = validator ?? new InlineValidator<T>();
+
 			CacheService = cacheService;
 			CurrentContext = dataContextService.GetDataContext();
 			Logger = logger;
 			DbUtilities = mongoDbUtilities;
 		}
 
-		private string _regionName = "";
+		protected ICacheService CacheService { get; }
+		protected DataContext CurrentContext { get; }
+		protected ILogger<T> Logger { get; }
+		protected IMongoDbUtilities DbUtilities { get; }
 
 		/// <summary>
-		/// Gets the name of the region.
+		///     Gets the data query.
 		/// </summary>
 		/// <value>
-		/// The name of the region.
+		///     The data query.
+		/// </value>
+		protected virtual IQueryable<T> DataQuery
+		{
+			get
+			{
+				if (_collection == null)
+					_collection = DbUtilities.Database.GetCollection<T>(CollectionName);
+
+				return _collection.AsQueryable();
+			}
+		}
+
+		/// <summary>
+		///     Gets the name of the region.
+		/// </summary>
+		/// <value>
+		///     The name of the region.
 		/// </value>
 		public string RegionName
 		{
@@ -56,12 +80,11 @@ namespace ArchitectNow.Mongo.Db
 			}
 		}
 
-		private string _searchRegionName = "";
 		/// <summary>
-		/// Gets the name of the search region.
+		///     Gets the name of the search region.
 		/// </summary>
 		/// <value>
-		/// The name of the search region.
+		///     The name of the search region.
 		/// </value>
 		public string SearchRegionName
 		{
@@ -78,7 +101,7 @@ namespace ArchitectNow.Mongo.Db
 		}
 
 		/// <summary>
-		/// Determines whether [has valid user].
+		///     Determines whether [has valid user].
 		/// </summary>
 		/// <returns></returns>
 		public bool HasValidUser()
@@ -89,46 +112,10 @@ namespace ArchitectNow.Mongo.Db
 		public abstract string CollectionName { get; }
 
 		/// <summary>
-		/// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+		///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
 		/// </summary>
 		public virtual void Dispose()
 		{
-
-		}
-
-		private IMongoCollection<T> _collection;
-		/// <summary>
-		/// Gets the collection.
-		/// </summary>
-		/// <returns></returns>
-		protected IMongoCollection<T> GetCollection() => _collection ?? (_collection = DbUtilities.Database.GetCollection<T>(CollectionName));
-
-
-		/// <summary>
-		/// Builds the cache key prefix.
-		/// </summary>
-		/// <returns></returns>
-		protected virtual string BuildCacheKeyPrefix()
-		{
-			return $"{GetType()}.{CurrentContext?.CurrentOrganizationId}";
-		}
-
-		/// <summary>
-		/// Builds the cache key.
-		/// </summary>
-		/// <param name="methodName">Name of the method.</param>
-		/// <param name="parameters">The parameters.</param>
-		/// <returns></returns>
-		protected virtual string BuildCacheKey(string methodName, params object[] parameters)
-		{
-			var key = $"{BuildCacheKeyPrefix()}.{methodName}";
-
-			if (parameters != null && parameters.Length > 0)
-			{
-				key = parameters.Aggregate(key, (current, param) => current + (".-" + param));
-			}
-
-			return key;
 		}
 
 		public virtual async Task<bool> DeleteAllAsync()
@@ -141,68 +128,52 @@ namespace ArchitectNow.Mongo.Db
 
 			return true;
 		}
-		
+
 		public virtual async Task<List<T>> GetAllAsync(bool onlyActive = true)
 		{
-            var cacheKey = BuildCacheKey(nameof(GetAllAsync), onlyActive);
+			var cacheKey = BuildCacheKey(nameof(GetAllAsync), onlyActive);
 
-            var results = CacheService.Get<List<T>>(cacheKey, SearchRegionName);
-            if (results != null)
-            {
-                return results;
-            }
+			var results = CacheService.Get<List<T>>(cacheKey, SearchRegionName);
+			if (results != null)
+				return results;
 
 			if (onlyActive)
-			{
 				results = await GetCollection().Find(x => x.IsActive).ToListAsync();
-			}
 			else
-			{
 				results = await GetCollection().Find(x => x.IsActive).ToListAsync();
-			}
 
-            CacheService.Add(cacheKey, results, SearchRegionName);
+			CacheService.Add(cacheKey, results, SearchRegionName);
 			return results;
 		}
-		
+
 		public virtual async Task<T> GetOneAsync(Guid id)
 		{
-            var cacheKey = BuildCacheKey(nameof(GetOneAsync), id);
+			var cacheKey = BuildCacheKey(nameof(GetOneAsync), id);
 
-            var result = CacheService.Get<T>(cacheKey, RegionName);
+			var result = CacheService.Get<T>(cacheKey, RegionName);
 
-            if (result != null)
-            {
-                return result;
-            }
+			if (result != null)
+				return result;
 
 			result = await GetCollection().Find(x => x.Id == id).FirstOrDefaultAsync();
 
-            CacheService.Add(cacheKey, result, RegionName);
+			CacheService.Add(cacheKey, result, RegionName);
 			return result;
 		}
 
 		public virtual async Task<T> SaveAsync(T item)
 		{
 			if (item.Id != Guid.Empty)
-			{
 				item.UpdatedDate = DateTime.UtcNow;
-			}
 
 			if (item.OwnerUserId == null || item.OwnerUserId == Guid.Empty)
-			{
 				if (CurrentContext != null && CurrentContext.CurrentUserId != Guid.Empty)
-				{
 					item.OwnerUserId = CurrentContext.CurrentUserId;
-				}
-			}
 
 			var errors = await ValidateObject(item);
 
 			if (errors.Any())
-			{
 				throw new ValidationException("A validation error has occured saving item of type '" + item.GetType(), errors);
-			}
 
 			var existing = await GetOneAsync(item.Id);
 
@@ -216,7 +187,8 @@ namespace ArchitectNow.Mongo.Db
 				await GetCollection().ReplaceOneAsync(filter, item);
 			}
 
-			Logger.LogInformation(EventIds.Update, "Entity Saved to {CollectionName}: \'{Id}\' - {@item}", CollectionName, item.Id, item);
+			Logger.LogInformation(EventIds.Update, "Entity Saved to {CollectionName}: \'{Id}\' - {@item}", CollectionName,
+				item.Id, item);
 
 			//make sure we update the cache...
 			var cacheKey = BuildCacheKey(nameof(GetOneAsync), item.Id);
@@ -226,7 +198,7 @@ namespace ArchitectNow.Mongo.Db
 			CacheService.ClearRegion(SearchRegionName);
 			return item;
 		}
-		
+
 		public virtual async Task<bool> DeleteAsync(Guid id)
 		{
 			var filter = Builders<T>.Filter.Eq("_id", id);
@@ -235,14 +207,14 @@ namespace ArchitectNow.Mongo.Db
 
 			Logger.LogInformation(EventIds.Update, "Entity Deleted to {CollectionName}: \'{id}\'", CollectionName, id);
 
-            var cacheKey = BuildCacheKey("GetOne", id);
+			var cacheKey = BuildCacheKey("GetOne", id);
 
-            CacheService.Remove(cacheKey, RegionName);
+			CacheService.Remove(cacheKey, RegionName);
 
-            CacheService.ClearRegion(SearchRegionName);
+			CacheService.ClearRegion(SearchRegionName);
 			return true;
 		}
-		
+
 		public virtual async Task<bool> DeleteAsync(T item)
 		{
 			var cacheKey = BuildCacheKey(nameof(GetOneAsync), item.Id);
@@ -252,11 +224,46 @@ namespace ArchitectNow.Mongo.Db
 		}
 
 		/// <summary>
-		/// Configures the indexes.
+		///     Configures the indexes.
 		/// </summary>
 		public virtual void ConfigureIndexes()
 		{
 			CreateIndex("Id", Builders<T>.IndexKeys.Ascending(x => x.Id).Ascending(x => x.IsActive));
+		}
+
+		/// <summary>
+		///     Gets the collection.
+		/// </summary>
+		/// <returns></returns>
+		protected IMongoCollection<T> GetCollection()
+		{
+			return _collection ?? (_collection = DbUtilities.Database.GetCollection<T>(CollectionName));
+		}
+
+
+		/// <summary>
+		///     Builds the cache key prefix.
+		/// </summary>
+		/// <returns></returns>
+		protected virtual string BuildCacheKeyPrefix()
+		{
+			return $"{GetType()}.{CurrentContext?.CurrentOrganizationId}";
+		}
+
+		/// <summary>
+		///     Builds the cache key.
+		/// </summary>
+		/// <param name="methodName">Name of the method.</param>
+		/// <param name="parameters">The parameters.</param>
+		/// <returns></returns>
+		protected virtual string BuildCacheKey(string methodName, params object[] parameters)
+		{
+			var key = $"{BuildCacheKeyPrefix()}.{methodName}";
+
+			if (parameters != null && parameters.Length > 0)
+				key = parameters.Aggregate(key, (current, param) => current + (".-" + param));
+
+			return key;
 		}
 
 		protected virtual void CreateIndex(string name, IndexKeysDefinition<T> keys)
@@ -267,11 +274,10 @@ namespace ArchitectNow.Mongo.Db
 			};
 
 			GetCollection().Indexes.CreateOne(keys, options);
-
 		}
 
 		/// <summary>
-		/// Validates the object.
+		///     Validates the object.
 		/// </summary>
 		/// <param name="item">The item.</param>
 		/// <returns></returns>
@@ -280,25 +286,6 @@ namespace ArchitectNow.Mongo.Db
 			var validationResult = await _validator.ValidateAsync(item);
 			var validationResultErrors = validationResult.Errors;
 			return validationResultErrors;
-		}
-
-		/// <summary>
-		/// Gets the data query.
-		/// </summary>
-		/// <value>
-		/// The data query.
-		/// </value>
-		protected virtual IQueryable<T> DataQuery
-		{
-			get
-			{
-				if (_collection == null)
-				{
-					_collection = DbUtilities.Database.GetCollection<T>(CollectionName);
-				}
-
-				return _collection.AsQueryable();
-			}
 		}
 
 		protected virtual async Task<long> CountAsync(Expression<Func<T, bool>> filter)
