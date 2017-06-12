@@ -12,6 +12,7 @@ var target                  = Argument("target", "Default");
 var configuration           = Argument("configuration", "Release");
 var treatWarningsAsErrors   = Argument("treatWarningsAsErrors", "false");
 var solutionPath            = MakeAbsolute(File(Argument("solutionPath", "./ArchitectNow.Framework.sln")));
+var includeSymbols          = Argument("includeSymbols", "false");
 
 //////////////////////////////////////////////////////////////////////
 // PREPARATION
@@ -188,6 +189,7 @@ Task("DotNet-MsBuild-Pack")
             .UseToolVersion(MSBuildToolVersion.VS2017)
             .WithProperty("PackageVersion", versionInfo.NuGetVersionV2)
             .WithProperty("NoBuild", "true")
+            .WithProperty("IncludeSymbols", includeSymbols)
             .WithTarget("Pack"));
 
         MSBuild("src/ArchitectNow.Web/ArchitectNow.Web.csproj", c => c
@@ -196,6 +198,7 @@ Task("DotNet-MsBuild-Pack")
             .UseToolVersion(MSBuildToolVersion.VS2017)
             .WithProperty("PackageVersion", versionInfo.NuGetVersionV2)
             .WithProperty("NoBuild", "true")
+            .WithProperty("IncludeSymbols", includeSymbols)
             .WithTarget("Pack"));
 
         //SQL
@@ -205,6 +208,7 @@ Task("DotNet-MsBuild-Pack")
             .UseToolVersion(MSBuildToolVersion.VS2017)
             .WithProperty("PackageVersion", versionInfo.NuGetVersionV2)
             .WithProperty("NoBuild", "true")
+            .WithProperty("IncludeSymbols", includeSymbols)
             .WithTarget("Pack"));
 
         MSBuild("src/ArchitectNow.Web.Mongo/ArchitectNow.Web.Mongo.csproj", c => c
@@ -213,6 +217,7 @@ Task("DotNet-MsBuild-Pack")
             .UseToolVersion(MSBuildToolVersion.VS2017)
             .WithProperty("PackageVersion", versionInfo.NuGetVersionV2)
             .WithProperty("NoBuild", "true")
+            .WithProperty("IncludeSymbols", includeSymbols)
             .WithTarget("Pack"));
 });
 
@@ -245,13 +250,28 @@ Task("MyGet-Upload-Artifacts")
     .Does(() =>
 {
     var nugetFeed = "https://www.myget.org/F/architectnow/api/v2/package";
-    var nugetApiKey = "21300101-5bf9-414b-9e4c-e5799c019dc1";
-
-    foreach(var nupkg in GetFiles(artifacts +"/*.nupkg")) {
+    
+    foreach(var nupkg in GetFiles(artifacts + "/*.nupkg")) {
         Information("Pushing: " + nupkg);
         NuGetPush(nupkg, new NuGetPushSettings {
-            Source = nugetFeed
+             Source = nugetFeed
         });
+    }
+});
+
+Task("MyGet-Upload-Symbols")
+    .IsDependentOn("MyGet-Upload-Artifacts")    
+    .Does(() =>
+{
+    var nugetFeed = "https://www.myget.org/F/architectnow/symbols/api/v2/package";
+    
+    foreach(var nupkg in GetFiles(artifacts +"/*.symbols.nupkg")) {
+        Information("Pushing: " + nupkg);
+        /*
+        NuGetPush(nupkg, new NuGetPushSettings {
+             Source = nugetFeed
+        });
+        */
     }
 });
 
@@ -263,15 +283,16 @@ Task("Nuget-Upload-Artifacts")
 
     foreach(var nupkg in GetFiles(artifacts +"/*.nupkg")) {
         Information("Pushing: " + nupkg);
-        NuGetPush(nupkg, new NuGetPushSettings {
+        /*NuGetPush(nupkg, new NuGetPushSettings {
             Source = nugetFeed
-        });
+        });*/
     }
 });
 
 Task("MyGet")        
-    .IsDependentOn("Nuget-Upload-Artifacts")
-    .IsDependentOn("MyGet-Upload-Artifacts");
+    // .IsDependentOn("Nuget-Upload-Artifacts")
+    .IsDependentOn("MyGet-Upload-Artifacts")
+    .IsDependentOn("MyGet-Upload-Symbols");
 
 // ************************** //
 
@@ -298,6 +319,25 @@ Task("Package")
 Task("CI")
     .IsDependentOn("MyGet")
     .IsDependentOn("Default");
+
+Task("TestGlob")
+    .Does(()=>{
+        foreach(var nupkg in GetFiles(artifacts +"/*symbols.nupkg")) {
+                Information("Pushing: " + nupkg);
+        }
+
+                Information("--------------------------");
+        
+        // Func<IFileSystemInfo, bool> exclude_symbols =
+        //      fileSystemInfo => {
+        //          Information(fileSystemInfo.Name);
+        //           return !fileSystemInfo.Path.FullPath.EndsWith(".symbols.nupkg", StringComparison.OrdinalIgnoreCase);
+        //      };
+
+        // foreach(var nupkg in GetFiles(artifacts +"/*nupkg", exclude_symbols)) {
+        //         Information("Pushing: " + nupkg);
+        // }
+    });
 
 //////////////////////////////////////////////////////////////////////
 // TASK TARGETS

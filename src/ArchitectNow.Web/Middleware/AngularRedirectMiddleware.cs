@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
@@ -8,21 +7,19 @@ namespace ArchitectNow.Web.Middleware
 	public class AngularRedirectMiddleware
 	{
 		private readonly RequestDelegate _next;
+		private readonly AngularRedirectMiddlewareOptions _options;
 
-		public AngularRedirectMiddleware(RequestDelegate next)
+		public AngularRedirectMiddleware(RequestDelegate next, AngularRedirectMiddlewareOptions options)
 		{
 			_next = next;
+			_options = options;
 		}
 
-		public async Task Invoke(HttpContext context, Func<HttpContext, bool> checkForPath = null)
+		public async Task Invoke(HttpContext context)
 		{
 			await _next(context);
 
-			if (checkForPath == null)
-			{
-				checkForPath = httpContext => context.Request.Path.StartsWithSegments("/app") &&
-				                              !context.Request.Path.StartsWithSegments("/hangfire");
-			}
+			var checkForPath = _options.CheckForPath;
 
 			// If there's no available file and the request doesn't contain an extension, we're probably trying to access a page.
 			// Rewrite request to use app root
