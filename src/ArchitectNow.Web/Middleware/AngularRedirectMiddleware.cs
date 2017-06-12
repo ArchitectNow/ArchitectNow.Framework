@@ -9,10 +9,10 @@ namespace ArchitectNow.Web.Middleware
 		private readonly RequestDelegate _next;
 		private readonly AngularRedirectMiddlewareOptions _options;
 
-		public AngularRedirectMiddleware(RequestDelegate next, AngularRedirectMiddlewareOptions options)
+		public AngularRedirectMiddleware(RequestDelegate next, AngularRedirectMiddlewareOptions options = null)
 		{
 			_next = next;
-			_options = options;
+			_options = options ?? new AngularRedirectMiddlewareOptions();
 		}
 
 		public async Task Invoke(HttpContext context)
