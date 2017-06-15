@@ -8,6 +8,7 @@ namespace ArchitectNow.Web.Services
     {
         Task<IActionResult> AsyncOk(Func<Task> serviceCall);
         Task<IActionResult> AsyncOk<TResult>(Func<Task<TResult>> serviceCall);
+        Task<IActionResult> AsyncOkCreated<TResult>(Func<Task<TResult>> serviceCall);
         Task<IActionResult> AsyncOkNoContent(Func<Task> serviceCall);
         Task<IActionResult> AsyncOkNotFound<TResult>(Func<Task<TResult>> serviceCall);
     }

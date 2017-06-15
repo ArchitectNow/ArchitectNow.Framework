@@ -1,20 +1,25 @@
 ﻿using System;
 using ArchitectNow.Models.Exceptions;
+using ArchitectNow.Models.Logging;
+using ArchitectNow.Models.ViewModels;
 using Autofac.Core;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace ArchitectNow.Web.Services
 {
     public class ExceptionResultBuilder : IExceptionResultBuilder
     {
 	    private readonly IHostingEnvironment _hostingEnvironment;
+	    private readonly ILogger<ExceptionResultBuilder> _logger;
 
-        public ExceptionResultBuilder(IHostingEnvironment hostingEnvironment)
-        {
-	        _hostingEnvironment = hostingEnvironment;
-        }
-        public ObjectResult Build(Exception exception)
+	    public ExceptionResultBuilder(IHostingEnvironment hostingEnvironment, ILogger<ExceptionResultBuilder> logger)
+	    {
+		    _hostingEnvironment = hostingEnvironment;
+		    _logger = logger;
+	    }
+        public IActionResult Build(Exception exception)
         {
             var stackTrace = "No stack trace available";
 
@@ -23,7 +28,7 @@ namespace ArchitectNow.Web.Services
                 stackTrace = exception.GetBaseException().StackTrace;
             }
             var statusCode = 500;
-            object content = null;
+            string content = null;
             var message = exception.GetBaseException().Message;
 
             var dependencyResolutionException = exception as DependencyResolutionException;
@@ -31,6 +36,12 @@ namespace ArchitectNow.Web.Services
             {
                 message = $"Dependency Exception: Please ensure that classes implement the interface: {message}";
             }
+
+	        var notFoundException = exception as NotFoundException;
+	        if (notFoundException != null)
+	        {
+		        return new NotFoundResult();
+	        }
 
             var apiException = exception as ApiException;
 
@@ -42,20 +53,25 @@ namespace ArchitectNow.Web.Services
                 {
                     message = apiException.GetBaseException().Message;
                 }
-                stackTrace = null;
             }
-			
-            dynamic response = new
-            {
-                Message = message,
-                Content = content,
-                StackTrace = stackTrace
-            };
-            
-            var objectResult = new ObjectResult(content ?? message)
+          
+	        var apiError = new ApiError
+	        {
+		        Error = content ?? message
+	        };
+
+	        if (!string.IsNullOrEmpty(stackTrace))
+	        {
+		        apiError.StackTrace = stackTrace;
+	        }
+
+            var objectResult = new ObjectResult(apiError)
             {
 	            StatusCode = statusCode
             };
+	        var eventId = new EventId(statusCode);
+
+	        _logger.LogError(eventId, exception, message);
 
             return objectResult;
         }

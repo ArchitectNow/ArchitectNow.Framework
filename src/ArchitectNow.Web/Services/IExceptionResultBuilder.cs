@@ -5,6 +5,6 @@ namespace ArchitectNow.Web.Services
 {
     public interface IExceptionResultBuilder
     {
-        ObjectResult Build(Exception exception);
+        IActionResult Build(Exception exception);
     }
 }

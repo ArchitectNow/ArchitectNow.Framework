@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ArchitectNow.Web.Services
 {
-	class ServiceInvoker : IServiceInvoker
+    class ServiceInvoker : IServiceInvoker
     {
         private readonly IExceptionResultBuilder _exceptionResultBuilder;
 
@@ -28,7 +28,24 @@ namespace ArchitectNow.Web.Services
             }
         }
 
-        public virtual async Task<IActionResult> AsyncOk(Func<Task> serviceCall)
+	    public virtual async Task<IActionResult> AsyncOkCreated<TResult>(Func<Task<TResult>> serviceCall)
+	    {
+			try
+			{
+				var result = await serviceCall();
+
+				return new ObjectResult(result)
+				{
+					StatusCode = 201
+				};
+			}
+			catch (Exception exception)
+			{
+				return _exceptionResultBuilder.Build(exception);
+			}
+		}
+
+	    public virtual async Task<IActionResult> AsyncOk(Func<Task> serviceCall)
         {
             try
             {
