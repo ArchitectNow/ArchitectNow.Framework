@@ -9,7 +9,7 @@ namespace ArchitectNow.Models.Exceptions
                 
         }
         
-        public override object GetContent()
+        public override string GetContent()
         {
             return null;
         }

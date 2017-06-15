@@ -1,50 +1,55 @@
 ﻿using System;
 using System.Net;
+using Newtonsoft.Json;
 
 namespace ArchitectNow.Models.Exceptions
 {
-    public abstract class ApiException : Exception
+	public abstract class ApiException : Exception
     {
         public HttpStatusCode StatusCode { get; set; }
-        public object Content { get; set; }
-        public ApiException(string message, object content = null) : this(HttpStatusCode.BadRequest, message, null, content)
+	    protected object InternalContent { get; set; }
+
+		protected ApiException(string message, object content = null) : this(HttpStatusCode.BadRequest, message, null, content)
         {
         }
 
-        public ApiException(HttpStatusCode statusCode, string message, object content = null) : this(statusCode, message, null, content)
+	    protected ApiException(HttpStatusCode statusCode, string message, object content = null) : this(statusCode, message, null, content)
         {
         }
 
-        public ApiException(HttpStatusCode statusCode, string message, Exception innerException, object content = null) : base(message, innerException)
+	    protected ApiException(HttpStatusCode statusCode, string message, Exception innerException, object content = null) : base(message, innerException)
         {
             StatusCode = statusCode;
-            Content = content;
+            InternalContent = content;
         }
 
-        public abstract object GetContent();
+        public abstract string GetContent();
     }
 
     public class ApiException<TContent>: ApiException, IApiException<TContent>
     {
-        public new TContent Content { get; set; }
+	    public TContent Content
+	    {
+		    get => (TContent) InternalContent;
+		    set => InternalContent = value;
+	    }
 
-        public ApiException(string message, TContent content = default(TContent)) : this(HttpStatusCode.BadRequest, message, null, content)
+	    public ApiException(string message, TContent content = default(TContent)) : this(HttpStatusCode.BadRequest, message, null, content)
         {
         }
 
-        public ApiException(HttpStatusCode statusCode, string message, TContent content = default(TContent)) : this(statusCode, message, null, content)
+	    public ApiException(HttpStatusCode statusCode, string message, TContent content = default(TContent)) : this(statusCode, message, null, content)
         {
         }
 
-        public ApiException(HttpStatusCode statusCode, string message, Exception innerException, TContent content = default(TContent)) : base(message, innerException)
+	    public ApiException(HttpStatusCode statusCode, string message, Exception innerException, TContent content = default(TContent)) : base(statusCode, message, innerException, content)
         {
-            StatusCode = statusCode;
-            Content = content;
+            
         }
 
-        public override object GetContent()
-        {
-            return Content;
-        }
+	    public override string GetContent()
+	    {
+		    return JsonConvert.SerializeObject(Content);
+	    }
     }
 }
