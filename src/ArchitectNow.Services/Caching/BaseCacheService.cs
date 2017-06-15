@@ -1,16 +1,14 @@
-﻿using ArchitectNow.Mongo.Options;
+﻿using ArchitectNow.Services.Options;
 using Microsoft.Extensions.Options;
 
-namespace ArchitectNow.Mongo.Services
+namespace ArchitectNow.Services.Caching
 {
 	public class BaseCacheService<TOptions> : ICacheService where TOptions : CachingOptions, new()
 	{
-		private readonly TOptions _optionsValue;
-
 		public BaseCacheService(IOptions<TOptions> options)
 		{
-			_optionsValue = options.Value;
-			IsEnabled = _optionsValue.Enabled;
+			Options = options.Value;
+			IsEnabled = Options.Enabled;
 		}
 
 		protected bool IsEnabled { get; }

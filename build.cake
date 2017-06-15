@@ -138,6 +138,14 @@ Task("DotNet-MsBuild")
             .WithProperty("AssemblyVersion")
             .WithTarget("Build")
         );
+
+        MSBuild("src/ArchitectNow.Services/ArchitectNow.Services.csproj", c => c
+            .SetConfiguration(configuration)
+            .SetVerbosity(Verbosity.Minimal)
+            .UseToolVersion(MSBuildToolVersion.VS2017)
+            .WithProperty("TreatWarningsAsErrors", treatWarningsAsErrors)
+            .WithTarget("Build")
+        );
         
         MSBuild("src/ArchitectNow.Web/ArchitectNow.Web.csproj", c => c
             .SetConfiguration(configuration)
@@ -201,6 +209,15 @@ Task("DotNet-MsBuild-Pack")
             .WithProperty("IncludeSymbols", includeSymbols)
             .WithTarget("Pack"));
 
+        MSBuild("src/ArchitectNow.Services/ArchitectNow.Services.csproj", c => c
+            .SetConfiguration(configuration)
+            .SetVerbosity(Verbosity.Normal)
+            .UseToolVersion(MSBuildToolVersion.VS2017)
+            .WithProperty("PackageVersion", versionInfo.NuGetVersionV2)
+            .WithProperty("NoBuild", "true")
+            .WithProperty("IncludeSymbols", includeSymbols)
+            .WithTarget("Pack"));
+
         //SQL
         MSBuild("src/ArchitectNow.Mongo/ArchitectNow.Mongo.csproj", c => c
             .SetConfiguration(configuration)
@@ -224,10 +241,11 @@ Task("DotNet-MsBuild-Pack")
 Task("DotNet-MsBuild-CopyToArtifacts")
     .IsDependentOn("DotNet-MsBuild-Pack")
     .Does(() => {
-
+        
         EnsureDirectoryExists(artifacts);
         CopyFiles("src/ArchitectNow.Web/bin/" +configuration +"/*.nupkg", artifacts);
         CopyFiles("src/ArchitectNow.Models/bin/" +configuration +"/*.nupkg", artifacts);
+        CopyFiles("src/ArchitectNow.Services/bin/" +configuration +"/*.nupkg", artifacts);
         CopyFiles("src/ArchitectNow.Mongo/bin/" +configuration +"/*.nupkg", artifacts);
         CopyFiles("src/ArchitectNow.Web.Mongo/bin/" +configuration +"/*.nupkg", artifacts);
 });

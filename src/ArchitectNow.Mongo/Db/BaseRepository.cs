@@ -5,7 +5,8 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using ArchitectNow.Models.Logging;
 using ArchitectNow.Mongo.Models;
-using ArchitectNow.Mongo.Services;
+using ArchitectNow.Services.Caching;
+using ArchitectNow.Services.Contexts;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.Extensions.Logging;
@@ -15,23 +16,20 @@ using MongoDB.Driver;
 namespace ArchitectNow.Mongo.Db
 {
 	//Test notifications
-	public abstract class BaseRepository<T> : IBaseRepository<T> where T : BaseDocument
+	public abstract class BaseRepository<TModel, TDataContext> : IBaseRepository<TModel> where TModel : BaseDocument where TDataContext: MongoDataContext
 	{
-		private readonly IValidator<T> _validator;
+		private readonly IValidator<TModel> _validator;
 
-		private IMongoCollection<T> _collection;
+		private IMongoCollection<TModel> _collection;
 
 		private string _regionName = "";
 
 		private string _searchRegionName = "";
-
-		/// <summary>
-		///     Initializes a new instance of the <see cref="BaseRepository{T}" /> class.
-		/// </summary>
-		protected BaseRepository(ILogger<T> logger, IMongoDbUtilities mongoDbUtilities,
-			IDataContextService<DataContext> dataContextService, ICacheService cacheService, IValidator<T> validator = null)
+		
+		protected BaseRepository(ILogger<TModel> logger, IMongoDbUtilities mongoDbUtilities,
+			IDataContextService<TDataContext> dataContextService, ICacheService cacheService, IValidator<TModel> validator = null)
 		{
-			_validator = validator ?? new InlineValidator<T>();
+			_validator = validator ?? new InlineValidator<TModel>();
 
 			CacheService = cacheService;
 			CurrentContext = dataContextService.GetDataContext();
@@ -40,8 +38,8 @@ namespace ArchitectNow.Mongo.Db
 		}
 
 		protected ICacheService CacheService { get; }
-		protected DataContext CurrentContext { get; }
-		protected ILogger<T> Logger { get; }
+		protected TDataContext CurrentContext { get; }
+		protected ILogger<TModel> Logger { get; }
 		protected IMongoDbUtilities DbUtilities { get; }
 
 		/// <summary>
@@ -50,12 +48,12 @@ namespace ArchitectNow.Mongo.Db
 		/// <value>
 		///     The data query.
 		/// </value>
-		protected virtual IQueryable<T> DataQuery
+		protected virtual IQueryable<TModel> DataQuery
 		{
 			get
 			{
 				if (_collection == null)
-					_collection = DbUtilities.Database.GetCollection<T>(CollectionName);
+					_collection = DbUtilities.Database.GetCollection<TModel>(CollectionName);
 
 				return _collection.AsQueryable();
 			}
@@ -129,11 +127,11 @@ namespace ArchitectNow.Mongo.Db
 			return true;
 		}
 
-		public virtual async Task<List<T>> GetAllAsync(bool onlyActive = true)
+		public virtual async Task<List<TModel>> GetAllAsync(bool onlyActive = true)
 		{
 			var cacheKey = BuildCacheKey(nameof(GetAllAsync), onlyActive);
 
-			var results = CacheService.Get<List<T>>(cacheKey, SearchRegionName);
+			var results = CacheService.Get<List<TModel>>(cacheKey, SearchRegionName);
 			if (results != null)
 				return results;
 
@@ -146,11 +144,11 @@ namespace ArchitectNow.Mongo.Db
 			return results;
 		}
 
-		public virtual async Task<T> GetOneAsync(Guid id)
+		public virtual async Task<TModel> GetOneAsync(Guid id)
 		{
 			var cacheKey = BuildCacheKey(nameof(GetOneAsync), id);
 
-			var result = CacheService.Get<T>(cacheKey, RegionName);
+			var result = CacheService.Get<TModel>(cacheKey, RegionName);
 
 			if (result != null)
 				return result;
@@ -161,7 +159,7 @@ namespace ArchitectNow.Mongo.Db
 			return result;
 		}
 
-		public virtual async Task<T> SaveAsync(T item)
+		public virtual async Task<TModel> SaveAsync(TModel item)
 		{
 			if (item.Id != Guid.Empty)
 				item.UpdatedDate = DateTime.UtcNow;
@@ -183,7 +181,7 @@ namespace ArchitectNow.Mongo.Db
 			}
 			else
 			{
-				var filter = Builders<T>.Filter.Eq("_id", item.Id);
+				var filter = Builders<TModel>.Filter.Eq("_id", item.Id);
 				await GetCollection().ReplaceOneAsync(filter, item);
 			}
 
@@ -201,7 +199,7 @@ namespace ArchitectNow.Mongo.Db
 
 		public virtual async Task<bool> DeleteAsync(Guid id)
 		{
-			var filter = Builders<T>.Filter.Eq("_id", id);
+			var filter = Builders<TModel>.Filter.Eq("_id", id);
 
 			await GetCollection().DeleteOneAsync(filter);
 
@@ -215,7 +213,7 @@ namespace ArchitectNow.Mongo.Db
 			return true;
 		}
 
-		public virtual async Task<bool> DeleteAsync(T item)
+		public virtual async Task<bool> DeleteAsync(TModel item)
 		{
 			var cacheKey = BuildCacheKey(nameof(GetOneAsync), item.Id);
 			CacheService.Remove(cacheKey, RegionName);
@@ -228,16 +226,16 @@ namespace ArchitectNow.Mongo.Db
 		/// </summary>
 		public virtual void ConfigureIndexes()
 		{
-			CreateIndex("Id", Builders<T>.IndexKeys.Ascending(x => x.Id).Ascending(x => x.IsActive));
+			CreateIndex("Id", Builders<TModel>.IndexKeys.Ascending(x => x.Id).Ascending(x => x.IsActive));
 		}
 
 		/// <summary>
 		///     Gets the collection.
 		/// </summary>
 		/// <returns></returns>
-		protected IMongoCollection<T> GetCollection()
+		protected IMongoCollection<TModel> GetCollection()
 		{
-			return _collection ?? (_collection = DbUtilities.Database.GetCollection<T>(CollectionName));
+			return _collection ?? (_collection = DbUtilities.Database.GetCollection<TModel>(CollectionName));
 		}
 
 
@@ -266,9 +264,9 @@ namespace ArchitectNow.Mongo.Db
 			return key;
 		}
 
-		protected virtual void CreateIndex(string name, IndexKeysDefinition<T> keys)
+		protected virtual void CreateIndex(string name, IndexKeysDefinition<TModel> keys)
 		{
-			var options = new CreateIndexOptions<T>
+			var options = new CreateIndexOptions<TModel>
 			{
 				Name = name
 			};
@@ -281,19 +279,19 @@ namespace ArchitectNow.Mongo.Db
 		/// </summary>
 		/// <param name="item">The item.</param>
 		/// <returns></returns>
-		protected virtual async Task<IList<ValidationFailure>> ValidateObject(T item)
+		protected virtual async Task<IList<ValidationFailure>> ValidateObject(TModel item)
 		{
 			var validationResult = await _validator.ValidateAsync(item);
 			var validationResultErrors = validationResult.Errors;
 			return validationResultErrors;
 		}
 
-		protected virtual async Task<long> CountAsync(Expression<Func<T, bool>> filter)
+		protected virtual async Task<long> CountAsync(Expression<Func<TModel, bool>> filter)
 		{
 			return await GetCollection().CountAsync(filter);
 		}
 
-		protected async Task<List<T>> FindAsync(Expression<Func<T, bool>> filter)
+		protected async Task<List<TModel>> FindAsync(Expression<Func<TModel, bool>> filter)
 		{
 			return await GetCollection().Find(filter).ToListAsync();
 		}

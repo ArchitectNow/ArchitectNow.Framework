@@ -1,5 +1,6 @@
 ﻿using System;
 using ArchitectNow.Mongo;
+using ArchitectNow.Services;
 using ArchitectNow.Web.Mongo.Configuration;
 using Autofac;
 using Microsoft.AspNetCore.Hosting;
@@ -37,6 +38,8 @@ namespace ArchitectNow.Web.Mongo
 		protected override void ConfigureAutofac(ContainerBuilder containerBuilder)
 		{
 			base.ConfigureAutofac(containerBuilder);
+			containerBuilder.RegisterModule<WebModule>();
+			containerBuilder.RegisterModule<ServicesModule>();
 			containerBuilder.RegisterModule<MongoModule>();
 		}
     }

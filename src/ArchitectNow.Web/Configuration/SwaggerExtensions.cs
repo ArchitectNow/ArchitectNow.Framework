@@ -11,15 +11,15 @@ namespace ArchitectNow.Web.Configuration
 {
     public static class SwaggerExtensions
     {
-	    public static void ConfigureSwagger(this IApplicationBuilder app, Assembly assembly, SwaggerOptions options, Action<SwaggerUiOwinSettings> action)
+	    public static void ConfigureSwagger(this IApplicationBuilder app, Assembly assembly, SwaggerOptions options, Action<SwaggerUiSettings> action)
 	    {
-		    var swaggerUiOwinSettings = new SwaggerUiOwinSettings
+		    var swaggerUiOwinSettings = new SwaggerUiSettings
 		    {
 			    DefaultPropertyNameHandling = PropertyNameHandling.CamelCase,
 			    Title = options.Title,
 			    SwaggerRoute = "/docs/v1/swagger.json",
 			    SwaggerUiRoute = "/docs",
-			    UseJsonEditor = true,
+				UseJsonEditor = true,
 				FlattenInheritanceHierarchy = true,
 				IsAspNetCore = true,
 			    DocumentProcessors =

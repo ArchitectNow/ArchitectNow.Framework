@@ -137,7 +137,7 @@ namespace ArchitectNow.Web
 			
 		}
 
-		protected virtual void ConfigureSwaggerUi(SwaggerUiOwinSettings swaggerUiOptions)
+		protected virtual void ConfigureSwaggerUi(SwaggerUiSettings swaggerUiOptions)
 		{
 			
 		}
