@@ -1,6 +1,7 @@
 ﻿using ArchitectNow.Mongo.Db;
 using ArchitectNow.Mongo.Options;
 using ArchitectNow.Mongo.Services;
+using ArchitectNow.Services.Contexts;
 using Autofac;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
@@ -13,7 +14,7 @@ namespace ArchitectNow.Mongo
 	    {
 		    builder.RegisterAssemblyTypes(ThisAssembly).AsImplementedInterfaces();
 
-			builder.RegisterType<DataContextService>().As<IDataContextService<DataContext>>().InstancePerLifetimeScope();
+			//builder.RegisterType<DataContextService>().As<IDataContextService<Da>>().InstancePerLifetimeScope();
 
 		    builder.Register(context =>
 		    {

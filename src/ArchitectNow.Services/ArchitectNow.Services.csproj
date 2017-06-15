@@ -4,15 +4,15 @@
     <TargetFrameworks>netstandard1.6</TargetFrameworks>
     <Authors>ArchitectNow</Authors>
     <Company>ArchitectNow</Company>
-    <Product>ArchitectNow.Mongo</Product>
-    <PackageId>ArchitectNow.Mongo</PackageId>
+    <Product>ArchitectNow.Services</Product>
+    <PackageId>ArchitectNow.Services</PackageId>
     <PackageProjectUrl>https://github.com/ArchitectNow/ArchitectNow.Framework</PackageProjectUrl>
     <PackageIconUrl>https://secure.gravatar.com/avatar/83fed82c32dc5424b4245cfc03d57b39?s=32&amp;r=g&amp;d=retro</PackageIconUrl>
     <RepositoryUrl>https://github.com/ArchitectNow/ArchitectNow.Framework</RepositoryUrl>
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
     <Copyright>Copyright © 2014-2017 ArchitectNow</Copyright>
     <PackageLicenseUrl>https://github.com/ArchitectNow/ArchitectNow.Framework/blob/master/LICENSE</PackageLicenseUrl>
-    <Description>ArchitectNow Framework - Mongo</Description>
+    <Description>ArchitectNow Framework - Services</Description>
   </PropertyGroup>
   
   <PropertyGroup>
@@ -24,21 +24,12 @@
 
   <ItemGroup>
     <PackageReference Include="Autofac" Version="4.6.0" />
-    <PackageReference Include="FluentValidation" Version="7.0.3" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="1.1.2" />
-    <PackageReference Include="Microsoft.Extensions.Options" Version="1.1.2" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="1.1.2" />
-    <PackageReference Include="MongoDB.Driver" Version="2.4.4" />
-    <PackageReference Include="Newtonsoft.Json" Version="10.0.2" />
-    <PackageReference Include="System.ComponentModel.Annotations" Version="4.3.0" />
   </ItemGroup>
-  
   <ItemGroup>
 		<Compile Include="..\..\VersionAssemblyInfo.cs" Link="VersionAssemblyInfo.cs" />
   </ItemGroup>
-  
   <ItemGroup>
-    <ProjectReference Include="..\ArchitectNow.Services\ArchitectNow.Services.csproj" />
     <ProjectReference Include="..\ArchitectNow.Models\ArchitectNow.Models.csproj" />
   </ItemGroup>
 

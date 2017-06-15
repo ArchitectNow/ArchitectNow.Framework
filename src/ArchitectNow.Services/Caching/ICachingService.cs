@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ArchitectNow.Mongo.Services
+﻿namespace ArchitectNow.Services.Caching
 {
 	public interface ICacheService
 	{

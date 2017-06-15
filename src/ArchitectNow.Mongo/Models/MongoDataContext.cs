@@ -1,13 +1,15 @@
 ﻿using System;
+using ArchitectNow.Models.Contexts;
+using ArchitectNow.Models.Options;
 
-namespace ArchitectNow.Mongo.Db
+namespace ArchitectNow.Mongo.Models
 {
-    public class DataContext
+    public class MongoDataContext:BaseDataContext<DataContextOptions>
     {
-        public DataContext(string environmentName = "")
+        public MongoDataContext(DataContextOptions options): base(options)
         {
             ResetContext();
-            EnvironmentName = environmentName;        
+	        EnvironmentName = Options?.Environment;
         }
 
         public Guid CurrentOrganizationId { get; set; }
