@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Linq;
-using System.Net.NetworkInformation;
 using System.Text;
 using ArchitectNow.Models.Security;
 using ArchitectNow.Web.Filters;
@@ -30,9 +28,11 @@ namespace ArchitectNow.Web
 			
 	        builder.Register(context =>
 		        {
-			        var physicalAddress = NetworkInterface.GetAllNetworkInterfaces().First().GetPhysicalAddress();
-			        var keyString = $"{physicalAddress}";
-			        var keyBytes = Encoding.Unicode.GetBytes(keyString);
+			        var configurationRoot = context.Resolve<IConfigurationRoot>();
+			        var issuerOptions = configurationRoot.GetSection("jwtIssuerOptions").Get<JwtIssuerOptions>();
+					
+			        var keyString = issuerOptions.Audience;
+					var keyBytes = Encoding.Unicode.GetBytes(keyString);
 			        var signingKey = new JwtSigningKey(keyBytes);
 			        return signingKey;
 		        })
