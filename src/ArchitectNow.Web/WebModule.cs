@@ -49,7 +49,7 @@ namespace ArchitectNow.Web
 		        issuerOptions.SigningCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature);
 		        
 		        return new OptionsWrapper<JwtIssuerOptions>(issuerOptions);
-	        }).As<IOptions<JwtIssuerOptions>>().SingleInstance();
+	        }).As<IOptions<JwtIssuerOptions>>().InstancePerLifetimeScope();
 
 	        builder.Register(context =>
 	        {
