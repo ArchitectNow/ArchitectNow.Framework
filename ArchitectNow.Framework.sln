@@ -21,6 +21,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArchitectNow.Models", "src\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArchitectNow.Services", "src\ArchitectNow.Services\ArchitectNow.Services.csproj", "{BC311746-D050-4993-AF5B-65A465C02E9B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArchitectNow.Web.Redis", "src\ArchitectNow.Web.Redis\ArchitectNow.Web.Redis.csproj", "{B7AF1D06-A890-4663-9610-68E19086CC73}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Redis", "Redis", "{EC725C51-075F-434C-AFFD-9B8D7A953604}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArchitectNow.Redis", "src\ArchitectNow.Redis\ArchitectNow.Redis.csproj", "{471C73F4-D1AA-4D32-89A9-877E3F05633C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +57,14 @@ Global
 		{BC311746-D050-4993-AF5B-65A465C02E9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BC311746-D050-4993-AF5B-65A465C02E9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BC311746-D050-4993-AF5B-65A465C02E9B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B7AF1D06-A890-4663-9610-68E19086CC73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7AF1D06-A890-4663-9610-68E19086CC73}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7AF1D06-A890-4663-9610-68E19086CC73}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7AF1D06-A890-4663-9610-68E19086CC73}.Release|Any CPU.Build.0 = Release|Any CPU
+		{471C73F4-D1AA-4D32-89A9-877E3F05633C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{471C73F4-D1AA-4D32-89A9-877E3F05633C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{471C73F4-D1AA-4D32-89A9-877E3F05633C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{471C73F4-D1AA-4D32-89A9-877E3F05633C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -62,5 +76,7 @@ Global
 		{94F86E1C-65D6-4FDC-9257-54C091A9819E} = {E2D41269-A40E-4899-B077-F421310ACBF4}
 		{2019D356-9E38-44F4-B35B-70A1D9582EFC} = {00A56DCD-AEA5-40E4-AE57-046E684ECC1D}
 		{BC311746-D050-4993-AF5B-65A465C02E9B} = {00A56DCD-AEA5-40E4-AE57-046E684ECC1D}
+		{B7AF1D06-A890-4663-9610-68E19086CC73} = {EC725C51-075F-434C-AFFD-9B8D7A953604}
+		{471C73F4-D1AA-4D32-89A9-877E3F05633C} = {EC725C51-075F-434C-AFFD-9B8D7A953604}
 	EndGlobalSection
 EndGlobal

@@ -61,7 +61,7 @@ namespace ArchitectNow.Web
 			{
 				services.ConfigureRaygun(ConfigurationRoot);
 			}
-
+			
 			beforeCreateContainerAction?.Invoke(services);
 
 			//last

@@ -4,15 +4,15 @@
 		<TargetFrameworks>netstandard1.6</TargetFrameworks>
 		<Authors>ArchitectNow</Authors>
 		<Company>ArchitectNow</Company>
-		<Product>ArchitectNow.Web.Sql</Product>
-		<PackageId>ArchitectNow.Web.Sql</PackageId>
+		<Product>ArchitectNow.Web.Redis</Product>
+		<PackageId>ArchitectNow.Web.Redis</PackageId>
 		<PackageProjectUrl>https://github.com/ArchitectNow/ArchitectNow.Framework</PackageProjectUrl>
 		<PackageIconUrl>https://secure.gravatar.com/avatar/83fed82c32dc5424b4245cfc03d57b39?s=32&amp;r=g&amp;d=retro</PackageIconUrl>
 		<RepositoryUrl>https://github.com/ArchitectNow/ArchitectNow.Framework</RepositoryUrl>
 		<PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
 		<Copyright>Copyright © 2014-2017 ArchitectNow</Copyright>
 		<PackageLicenseUrl>https://github.com/ArchitectNow/ArchitectNow.Framework/blob/master/LICENSE</PackageLicenseUrl>
-		<Description>ArchitectNow Framework - Web.Sql</Description>
+		<Description>ArchitectNow Framework - Web.Redis</Description>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -26,6 +26,8 @@
 		<PackageReference Include="Autofac" Version="4.6.0" />
 		<PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.1.0" />
 		<PackageReference Include="Hangfire.AspNetCore" Version="1.6.14" />
+		<PackageReference Include="Hangfire.Pro" Version="2.0.1" />
+		<PackageReference Include="Hangfire.Pro.Redis" Version="2.1.1" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="1.1.2" />
 		<PackageReference Include="Microsoft.AspNetCore.Antiforgery" Version="1.1.2" />
 		<PackageReference Include="Microsoft.AspNetCore.Diagnostics" Version="1.1.2" />
@@ -54,15 +56,17 @@
 		<PackageReference Include="Serilog.Extensions.Logging" Version="1.4.0" />
 		<PackageReference Include="Serilog.Sinks.Async" Version="1.0.1" />
 		<PackageReference Include="Serilog.Sinks.ColoredConsole" Version="2.0.0" />
+		<PackageReference Include="Serilog.Sinks.MongoDB" Version="3.1.0" />
 		<PackageReference Include="Serilog.Sinks.RollingFile" Version="3.3.0" />
 		<PackageReference Include="Serilog.Sinks.Literate" Version="2.1.0" />
 		<PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.0.1" />
-		<PackageReference Include="HangFire.SqlServer" Version="1.6.14" />
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\ArchitectNow.Services\ArchitectNow.Services.csproj" />
 		<ProjectReference Include="..\ArchitectNow.Web\ArchitectNow.Web.csproj" />
 	</ItemGroup>
+
 	<ItemGroup>
 		<Compile Include="..\..\VersionAssemblyInfo.cs" Link="VersionAssemblyInfo.cs" />
 	</ItemGroup>
