@@ -25,10 +25,11 @@ namespace ArchitectNow.Mongo.Db
             }
 
             var pack = new ConventionPack{
-                new EnumRepresentationConvention(BsonType.String)   
+                new EnumRepresentationConvention(BsonType.String),
+				new CamelCaseElementNameConvention()
             };
 
-            ConventionRegistry.Register("EnumStringConverter", pack, t => true);
+            ConventionRegistry.Register("AN Conventions", pack, t => true);
             MongoDefaults.MaxConnectionIdleTime = TimeSpan.FromMinutes(1);
             
             _dbName = GetDatabaseName();
