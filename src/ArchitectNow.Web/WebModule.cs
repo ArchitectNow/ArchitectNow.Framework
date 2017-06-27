@@ -14,8 +14,6 @@ namespace ArchitectNow.Web
 {
     public class WebModule : Module
     {
-        private int _depth;
-
         protected override void Load(ContainerBuilder builder)
         {
             var assembly = ThisAssembly;
@@ -59,30 +57,5 @@ namespace ArchitectNow.Web
 		        return raygunClient;
 	        }).AsSelf();
 		}
-
-		protected override void AttachToComponentRegistration(IComponentRegistry componentRegistry,
-                                                              IComponentRegistration registration)
-        {
-            registration.Preparing += RegistrationOnPreparing;
-            registration.Activating += RegistrationOnActivating;
-            base.AttachToComponentRegistration(componentRegistry, registration);
-        }
-
-        private string GetPrefix()
-        {
-            return new string('-', _depth * 2);
-        }
-
-        private void RegistrationOnPreparing(object sender, PreparingEventArgs preparingEventArgs)
-        {
-            Console.WriteLine("{0}Resolving  {1}", GetPrefix(), preparingEventArgs.Component.Activator.LimitType);
-            _depth++;
-        }
-
-        private void RegistrationOnActivating(object sender, ActivatingEventArgs<object> activatingEventArgs)
-        {
-            _depth--;
-            Console.WriteLine("{0}Activating {1}", GetPrefix(), activatingEventArgs.Component.Activator.LimitType);
-        }
     }
 }
