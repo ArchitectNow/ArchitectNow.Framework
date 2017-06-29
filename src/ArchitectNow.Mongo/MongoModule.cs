@@ -1,4 +1,5 @@
-﻿using ArchitectNow.Mongo.Models;
+﻿using ArchitectNow.Models.Options;
+using ArchitectNow.Mongo.Models;
 using ArchitectNow.Mongo.Options;
 using ArchitectNow.Mongo.Services;
 using ArchitectNow.Services.Contexts;
@@ -14,16 +15,10 @@ namespace ArchitectNow.Mongo
 	    {
 		    builder.RegisterAssemblyTypes(ThisAssembly).AsImplementedInterfaces();
 
-		    builder.RegisterGeneric(typeof(MongoDataContextService)).As<IDataContextService<MongoDataContext>>()
+		    builder.RegisterType<MongoDataContextService>().As<IDataContextService<MongoDataContext>>()
 			    .InstancePerLifetimeScope();
 			
-		    builder.Register(context =>
-		    {
-			    var configurationRoot = context.Resolve<IConfigurationRoot>();
-			    var mongoOptions = configurationRoot.GetSection("mongo").Get<MongoOptions>();
-				
-			    return new OptionsWrapper<MongoOptions>(mongoOptions);
-		    }).As<IOptions<MongoOptions>>().SingleInstance();
+		    builder.Register(context => context.Resolve<IConfigurationRoot>().CreateOptions<MongoOptions>("mongo")).As<IOptions<MongoOptions>>().SingleInstance();
 		}
     }
 }
