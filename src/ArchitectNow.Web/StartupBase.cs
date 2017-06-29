@@ -119,7 +119,7 @@ namespace ArchitectNow.Web
 
 			if (Features.UseHangfire)
 			{
-				app.ConfigureHangfire(ApplicationContainer, ConfigureDashboardOptions);
+				app.ConfigureHangfire(Features, ApplicationContainer, ConfigureDashboardOptions);
 			}
 
 			appLifetime.ApplicationStopped.Register(() =>

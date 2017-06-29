@@ -1,4 +1,4 @@
-﻿using ArchitectNow.Mongo.Db;
+﻿using ArchitectNow.Mongo.Models;
 using ArchitectNow.Mongo.Options;
 using ArchitectNow.Mongo.Services;
 using ArchitectNow.Services.Contexts;
@@ -14,8 +14,9 @@ namespace ArchitectNow.Mongo
 	    {
 		    builder.RegisterAssemblyTypes(ThisAssembly).AsImplementedInterfaces();
 
-			//builder.RegisterType<DataContextService>().As<IDataContextService<Da>>().InstancePerLifetimeScope();
-
+		    builder.RegisterGeneric(typeof(MongoDataContextService)).As<IDataContextService<MongoDataContext>>()
+			    .InstancePerLifetimeScope();
+			
 		    builder.Register(context =>
 		    {
 			    var configurationRoot = context.Resolve<IConfigurationRoot>();
