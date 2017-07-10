@@ -1,4 +1,5 @@
 using System;
+using ArchitectNow.Models.Options;
 using ArchitectNow.Web.Filters;
 using Autofac;
 using Hangfire;
@@ -8,7 +9,7 @@ namespace ArchitectNow.Web.Configuration
 {
 	public static class HangfireExtensions
 	{
-		public static void ConfigureHangfire(this IApplicationBuilder app, ILifetimeScope lifetimeScope, Action<DashboardOptions> configureDashboardOptions = null )
+		public static void ConfigureHangfire(this IApplicationBuilder app, Features features, ILifetimeScope lifetimeScope, Action<DashboardOptions> configureDashboardOptions = null )
 		{
 			var globalConfiguration = GlobalConfiguration.Configuration;
 
@@ -17,7 +18,10 @@ namespace ArchitectNow.Web.Configuration
 			globalConfiguration.UseFilter(raygunJobFilter);
 			//globalConfiguration.UseSerilogLogProvider();
 
-			app.UseHangfireServer();
+			if (features.UseHangfireServer)
+			{
+				app.UseHangfireServer();
+			}
 
 			var options = new DashboardOptions();
 			

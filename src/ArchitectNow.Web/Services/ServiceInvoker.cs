@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ArchitectNow.Web.Services
 {
-    class ServiceInvoker : IServiceInvoker
+    public class ServiceInvoker : IServiceInvoker
     {
         private readonly IExceptionResultBuilder _exceptionResultBuilder;
 

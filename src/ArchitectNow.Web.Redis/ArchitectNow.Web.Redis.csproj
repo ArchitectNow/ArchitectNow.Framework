@@ -4,15 +4,15 @@
 		<TargetFrameworks>netstandard1.6</TargetFrameworks>
 		<Authors>ArchitectNow</Authors>
 		<Company>ArchitectNow</Company>
-		<Product>ArchitectNow.Web.Mongo</Product>
-		<PackageId>ArchitectNow.Web.Mongo</PackageId>
+		<Product>ArchitectNow.Web.Redis</Product>
+		<PackageId>ArchitectNow.Web.Redis</PackageId>
 		<PackageProjectUrl>https://github.com/ArchitectNow/ArchitectNow.Framework</PackageProjectUrl>
 		<PackageIconUrl>https://secure.gravatar.com/avatar/83fed82c32dc5424b4245cfc03d57b39?s=32&amp;r=g&amp;d=retro</PackageIconUrl>
 		<RepositoryUrl>https://github.com/ArchitectNow/ArchitectNow.Framework</RepositoryUrl>
 		<PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
 		<Copyright>Copyright © 2014-2017 ArchitectNow</Copyright>
 		<PackageLicenseUrl>https://github.com/ArchitectNow/ArchitectNow.Framework/blob/master/LICENSE</PackageLicenseUrl>
-		<Description>ArchitectNow Framework - Web.Models</Description>
+		<Description>ArchitectNow Framework - Web.Redis</Description>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -27,7 +27,8 @@
 		<PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.1.0" />
 		<PackageReference Include="Hangfire.AspNetCore" Version="1.6.14" />
 		<PackageReference Include="Hangfire.Core" Version="1.6.14" />
-		<PackageReference Include="HangFire.Mongo" Version="0.4.0" />
+		<PackageReference Include="Hangfire.Pro" Version="2.0.1" />
+		<PackageReference Include="Hangfire.Pro.Redis" Version="2.1.1" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="1.1.2" />
 		<PackageReference Include="Microsoft.AspNetCore.Antiforgery" Version="1.1.2" />
 		<PackageReference Include="Microsoft.AspNetCore.Diagnostics" Version="1.1.2" />
@@ -63,7 +64,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\ArchitectNow.Mongo\ArchitectNow.Mongo.csproj" />
+		<ProjectReference Include="..\ArchitectNow.Services\ArchitectNow.Services.csproj" />
 		<ProjectReference Include="..\ArchitectNow.Web\ArchitectNow.Web.csproj" />
 	</ItemGroup>
 

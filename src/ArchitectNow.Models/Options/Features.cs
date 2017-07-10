@@ -6,5 +6,6 @@
 	    public bool EnableCompression { get; set; }
 	    public bool DisableCaching { get; set; }
 	    public bool UseRaygun { get; set; }
+	    public bool UseHangfireServer { get; set; }
     }
 }

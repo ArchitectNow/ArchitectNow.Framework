@@ -172,6 +172,15 @@ Task("DotNet-MsBuild")
             .WithTarget("Build")
         );
 
+        //Redis
+
+        MSBuild("src/ArchitectNow.Web.Redis/ArchitectNow.Web.Redis.csproj", c => c
+            .SetConfiguration(configuration)
+            .SetVerbosity(Verbosity.Minimal)
+            .UseToolVersion(MSBuildToolVersion.VS2017)
+            .WithProperty("TreatWarningsAsErrors", treatWarningsAsErrors)
+            .WithTarget("Build")
+        );
         //SQL
 
         /*
@@ -218,7 +227,7 @@ Task("DotNet-MsBuild-Pack")
             .WithProperty("IncludeSymbols", includeSymbols)
             .WithTarget("Pack"));
 
-        //SQL
+        //Mongo
         MSBuild("src/ArchitectNow.Mongo/ArchitectNow.Mongo.csproj", c => c
             .SetConfiguration(configuration)
             .SetVerbosity(Verbosity.Normal)
@@ -236,6 +245,16 @@ Task("DotNet-MsBuild-Pack")
             .WithProperty("NoBuild", "true")
             .WithProperty("IncludeSymbols", includeSymbols)
             .WithTarget("Pack"));
+
+        //Redis
+        MSBuild("src/ArchitectNow.Web.Redis/ArchitectNow.Web.Redis.csproj", c => c
+            .SetConfiguration(configuration)
+            .SetVerbosity(Verbosity.Normal)
+            .UseToolVersion(MSBuildToolVersion.VS2017)
+            .WithProperty("PackageVersion", versionInfo.NuGetVersionV2)
+            .WithProperty("NoBuild", "true")
+            .WithProperty("IncludeSymbols", includeSymbols)
+            .WithTarget("Pack"));            
 });
 
 Task("DotNet-MsBuild-CopyToArtifacts")
@@ -248,6 +267,7 @@ Task("DotNet-MsBuild-CopyToArtifacts")
         CopyFiles("src/ArchitectNow.Services/bin/" +configuration +"/*.nupkg", artifacts);
         CopyFiles("src/ArchitectNow.Mongo/bin/" +configuration +"/*.nupkg", artifacts);
         CopyFiles("src/ArchitectNow.Web.Mongo/bin/" +configuration +"/*.nupkg", artifacts);
+        CopyFiles("src/ArchitectNow.Web.Redis/bin/" +configuration +"/*.nupkg", artifacts);
 });
 
 Task("DotNet-Test")
