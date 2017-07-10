@@ -47,9 +47,14 @@ namespace ArchitectNow.Models.Exceptions
             
         }
 
-	    public override string GetContent()
-	    {
-		    return JsonConvert.SerializeObject(Content);
-	    }
-    }
+		public override string GetContent()
+		{
+			if (Content != null)
+			{
+				var body = JsonConvert.SerializeObject(Content);
+				return body;
+			}
+			return null;
+		}
+	}
 }
