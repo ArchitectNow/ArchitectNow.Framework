@@ -26,7 +26,7 @@ namespace ArchitectNow.Web.Redis
 			{
 				if (Features.UseHangfire)
 				{
-					services.ConfigureHangfire(GetHangfireConnectionString, ConfigureRedis);
+					services.ConfigureHangfire(GetHangfireConnectionString, ConfigureRedis, ConfigureHangfire);
 				}
 			};
 
