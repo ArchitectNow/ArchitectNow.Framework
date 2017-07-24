@@ -115,6 +115,8 @@ namespace ArchitectNow.Web
 				app.ConfigureCompression();
 			}
 
+			AddMiddleware(app, env, loggerFactory, configurationRoot);
+
 			app.UseMvc();
 
 			if (Features.UseHangfire)
@@ -130,6 +132,11 @@ namespace ArchitectNow.Web
 
 			_logger.LogInformation($"{nameof(ConfigureInternal)} complete...");
 
+		}
+
+		protected virtual void AddMiddleware(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IConfigurationRoot configurationRoot)
+		{
+			
 		}
 
 		protected virtual void ConfigureLogging(LoggerConfiguration loggerConfiguration)
