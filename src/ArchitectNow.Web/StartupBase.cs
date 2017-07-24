@@ -100,7 +100,7 @@ namespace ArchitectNow.Web
 		{
 			_logger.LogInformation($"{nameof(ConfigureInternal)} starting...");
 
-			env.ConfigureLogger(loggerFactory, ConfigurationRoot, ConfigureLogging);
+			env.ConfigureLogger(loggerFactory, ConfigurationRoot, ConfigureLoggingEnrichers, ConfigureLogging);
 
 			app.ConfigureJwt(ConfigurationRoot);
 
@@ -137,6 +137,11 @@ namespace ArchitectNow.Web
 		protected virtual void AddMiddleware(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IConfigurationRoot configurationRoot)
 		{
 			
+		}
+
+		protected virtual void ConfigureLoggingEnrichers(LoggerConfiguration loggerConfiguration)
+		{
+
 		}
 
 		protected virtual void ConfigureLogging(LoggerConfiguration loggerConfiguration)

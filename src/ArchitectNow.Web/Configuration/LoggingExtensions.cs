@@ -16,7 +16,7 @@ namespace ArchitectNow.Web.Configuration
 			services.AddLogging();
 		}
 
-		public static void ConfigureLogger(this IHostingEnvironment environment, ILoggerFactory loggerFactory, IConfigurationRoot configurationRoot, Action<LoggerConfiguration> setupAction = null)
+		public static void ConfigureLogger(this IHostingEnvironment environment, ILoggerFactory loggerFactory, IConfigurationRoot configurationRoot, Action<LoggerConfiguration> setupEnrichers, Action<LoggerConfiguration> setupAction = null)
 		{
 			var baseDir = environment.ContentRootPath;
 			var logPath = Path.Combine(baseDir, "logs");
@@ -30,6 +30,11 @@ namespace ArchitectNow.Web.Configuration
 			if (!Enum.TryParse(configurationRoot["logging:logLevel:system"], true, out logLevel))
 				logLevel = LogEventLevel.Verbose;
 			var loggingConfiguration = new LoggerConfiguration()
+				.Enrich.FromLogContext();
+
+			setupEnrichers?.Invoke(loggingConfiguration);
+			
+			loggingConfiguration
 				.WriteTo
 				.RollingFile($@"{logPath}\{{Date}}.txt", logLevel, retainedFileCountLimit: 10, shared: true)
 				.WriteTo
