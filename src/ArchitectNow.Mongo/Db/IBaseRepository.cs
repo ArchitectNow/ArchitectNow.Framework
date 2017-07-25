@@ -19,7 +19,7 @@ namespace ArchitectNow.Mongo.Db
     public interface IBaseRepository : IDisposable
     {
         string CollectionName { get; }
-        void ConfigureIndexes();
+        Task ConfigureIndexes();
         bool HasValidUser();
         string RegionName { get; }
         string SearchRegionName { get; }
