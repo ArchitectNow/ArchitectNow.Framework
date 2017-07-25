@@ -224,9 +224,9 @@ namespace ArchitectNow.Mongo.Db
 		/// <summary>
 		///     Configures the indexes.
 		/// </summary>
-		public virtual void ConfigureIndexes()
+		public virtual async Task ConfigureIndexes()
 		{
-			CreateIndex("Id", Builders<TModel>.IndexKeys.Ascending(x => x.Id).Ascending(x => x.IsActive));
+			await CreateIndex("Id", Builders<TModel>.IndexKeys.Ascending(x => x.Id).Ascending(x => x.IsActive));
 		}
 
 		/// <summary>
@@ -264,14 +264,14 @@ namespace ArchitectNow.Mongo.Db
 			return key;
 		}
 
-		protected virtual void CreateIndex(string name, IndexKeysDefinition<TModel> keys)
+		protected virtual async Task CreateIndex(string name, IndexKeysDefinition<TModel> keys)
 		{
 			var options = new CreateIndexOptions<TModel>
 			{
 				Name = name
 			};
 
-			GetCollection().Indexes.CreateOne(keys, options);
+			await GetCollection().Indexes.CreateOneAsync(keys, options);
 		}
 
 		/// <summary>
