@@ -5,15 +5,18 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
+using Serilog.Core;
 using Serilog.Events;
 
 namespace ArchitectNow.Web.Configuration
 {
 	public static class LoggingExtensions
 	{
+		private static readonly LoggingLevelSwitch LogEventSwitch = new LoggingLevelSwitch();
 		public static void ConfigureLogging(this IServiceCollection services)
 		{
 			services.AddLogging();
+			services.AddSingleton(LogEventSwitch);
 		}
 
 		public static void ConfigureLogger(this IHostingEnvironment environment, ILoggerFactory loggerFactory, IConfigurationRoot configurationRoot, Action<LoggerConfiguration> setupEnrichers, Action<LoggerConfiguration> setupAction = null)
@@ -26,15 +29,19 @@ namespace ArchitectNow.Web.Configuration
 			}
 
 			LogEventLevel logLevel;
-
+			
 			if (!Enum.TryParse(configurationRoot["logging:logLevel:system"], true, out logLevel))
 				logLevel = LogEventLevel.Verbose;
+
+			LogEventSwitch.MinimumLevel = logLevel;
+
 			var loggingConfiguration = new LoggerConfiguration()
 				.Enrich.FromLogContext();
 
 			setupEnrichers?.Invoke(loggingConfiguration);
 			
 			loggingConfiguration
+				.MinimumLevel.ControlledBy(LogEventSwitch)
 				.WriteTo
 				.RollingFile($@"{logPath}\{{Date}}.txt", logLevel, retainedFileCountLimit: 10, shared: true)
 				.WriteTo
