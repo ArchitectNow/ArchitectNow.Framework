@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using ArchitectNow.Models.Options;
 using ArchitectNow.Web.Configuration;
@@ -12,7 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
-using SwaggerOptions = ArchitectNow.Models.Options.SwaggerOptions;
+using SwaggerOptions = ArchitectNow.Web.Models.SwaggerOptions;
 using AutoMapper;
 using NSwag.AspNetCore;
 
@@ -31,7 +32,7 @@ namespace ArchitectNow.Web
 		
 		protected abstract Features Features { get; }
 
-		protected abstract SwaggerOptions SwaggerOptions { get; }
+		protected abstract IEnumerable<SwaggerOptions> SwaggerOptions { get; }
 
 		protected IConfigurationRoot ConfigurationRoot => _configurationRoot;
 		protected IContainer ApplicationContainer { get; private set; }
@@ -108,7 +109,7 @@ namespace ArchitectNow.Web
 
 			app.ConfigureAssets(configurationRoot);
 
-			app.ConfigureSwagger(typeof(TStartup).GetTypeInfo().Assembly, SwaggerOptions, ConfigureSwaggerUi);
+			app.ConfigureSwagger(typeof(TStartup).GetTypeInfo().Assembly, SwaggerOptions);
 
 			if (Features.EnableCompression)
 			{
