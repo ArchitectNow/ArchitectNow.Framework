@@ -150,11 +150,6 @@ namespace ArchitectNow.Web
 			
 		}
 
-		protected virtual void ConfigureSwaggerUi(SwaggerUiSettings swaggerUiOptions)
-		{
-			
-		}
-
 		protected virtual void ConfigureDashboardOptions(DashboardOptions dashboardOptions)
 		{
 			
