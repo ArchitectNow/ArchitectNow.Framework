@@ -1,40 +1,54 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using ArchitectNow.Models.Options;
+using ArchitectNow.Web.Models;
 using Microsoft.AspNetCore.Builder;
 using NJsonSchema;
+using NJsonSchema.Generation;
 using NSwag;
 using NSwag.AspNetCore;
+using NSwag.SwaggerGeneration;
 using NSwag.SwaggerGeneration.WebApi.Processors.Security;
 
 namespace ArchitectNow.Web.Configuration
 {
     public static class SwaggerExtensions
     {
-	    public static void ConfigureSwagger(this IApplicationBuilder app, Assembly assembly, SwaggerOptions options, Action<SwaggerUiSettings> action)
+	    public static void ConfigureSwagger(this IApplicationBuilder app, Assembly assembly, IEnumerable<SwaggerOptions> options)
 	    {
-		    var swaggerUiOwinSettings = new SwaggerUiSettings
+		    foreach (var option in options)
 		    {
-			    DefaultPropertyNameHandling = PropertyNameHandling.CamelCase,
-			    Title = options.Title,
-			    SwaggerRoute = "/docs/v1/swagger.json",
-			    SwaggerUiRoute = "/docs",
-				UseJsonEditor = true,
-				FlattenInheritanceHierarchy = true,
-				IsAspNetCore = true,
-			    DocumentProcessors =
-			    {
-				    new SecurityDefinitionAppender("Authorization", new SwaggerSecurityScheme
-				    {
-					    Type = SwaggerSecuritySchemeType.ApiKey,
-					    Name = "Authorization",
-					    In = SwaggerSecurityApiKeyLocation.Header
-				    })
-			    }
-		    };
-			action?.Invoke(swaggerUiOwinSettings);
+			    var action = option.Configure;
 
-		    app.UseSwaggerUi(assembly, swaggerUiOwinSettings);
+			    var swaggerUiOwinSettings = new SwaggerUiSettings
+			    {
+				    DefaultPropertyNameHandling = PropertyNameHandling.CamelCase,
+				    Title = option.Title,
+				    SwaggerRoute = option.SwaggerRoute,
+				    SwaggerUiRoute = option.SwaggerUiRoute,
+				    UseJsonEditor = true,
+				    FlattenInheritanceHierarchy = true,
+				    IsAspNetCore = true
+			    };
+			    
+			    foreach (var optionDocumentProcessor in option.DocumentProcessors)
+			    {
+				    swaggerUiOwinSettings.DocumentProcessors.Add(optionDocumentProcessor);
+			    }
+			    
+			    action?.Invoke(swaggerUiOwinSettings);
+			    if (option.Controllers?.Any() == true)
+			    {
+				    app.UseSwaggerUi(option.Controllers, swaggerUiOwinSettings,
+					    new SwaggerJsonSchemaGenerator((JsonSchemaGeneratorSettings) swaggerUiOwinSettings));
+			    }
+			    else
+			    {
+				    app.UseSwaggerUi(assembly, swaggerUiOwinSettings);
+			    }
+		    }
 	    }
 	}
 }
