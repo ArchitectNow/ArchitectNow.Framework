@@ -22,16 +22,19 @@ namespace ArchitectNow.Web.Models
 	    public Action<SwaggerUiSettings> Configure { get; set; }
 	    public IList<IDocumentProcessor> DocumentProcessors { get; set; } = new List<IDocumentProcessor>();
 
-	    public void AddAuthorizationHeader()
+	    public SwaggerOptions(bool includeAuthorizationHeader = true)
 	    {
-		    DocumentProcessors.Add(
-			    new SecurityDefinitionAppender("Authorization", new SwaggerSecurityScheme
-			    {
-				    Type = SwaggerSecuritySchemeType.ApiKey,
-				    Name = "Authorization",
-				    In = SwaggerSecurityApiKeyLocation.Header
-			    })
-		    );
+		    if (includeAuthorizationHeader)
+		    {
+			    DocumentProcessors.Add(
+				    new SecurityDefinitionAppender("Authorization", new SwaggerSecurityScheme
+				    {
+					    Type = SwaggerSecuritySchemeType.ApiKey,
+					    Name = "Authorization",
+					    In = SwaggerSecurityApiKeyLocation.Header
+				    })
+			    );
+		    }
 	    }
 	}
 }
