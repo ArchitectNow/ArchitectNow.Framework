@@ -13,6 +13,7 @@ var configuration           = Argument("configuration", "Release");
 var treatWarningsAsErrors   = Argument("treatWarningsAsErrors", "false");
 var solutionPath            = MakeAbsolute(File(Argument("solutionPath", "./ArchitectNow.Framework.sln")));
 var includeSymbols          = Argument("includeSymbols", "false");
+var myGetApiKey             = Argument("myGetApiKey", "")
 
 //////////////////////////////////////////////////////////////////////
 // PREPARATION
@@ -22,7 +23,7 @@ var testAssemblies          = "./tests/**/bin/" +configuration +"/*.Tests.dll";
 
 var artifacts               = MakeAbsolute(Directory(Argument("artifactPath", "./artifacts")));
 var versionAssemblyInfo     = MakeAbsolute(File(Argument("versionAssemblyInfo", "VersionAssemblyInfo.cs")));
-var analysisReports        = MakeAbsolute(Directory(Argument("analysisReports", "./analysis")));
+var analysisReports         = MakeAbsolute(Directory(Argument("analysisReports", "./analysis")));
 
 IEnumerable<FilePath> nugetProjectPaths     = null;
 SolutionParserResult solution               = null;
@@ -291,9 +292,13 @@ Task("MyGet-Upload-Artifacts")
     
     foreach(var nupkg in GetFiles(artifacts + "/*.nupkg")) {
         Information("Pushing: " + nupkg);
-        NuGetPush(nupkg, new NuGetPushSettings {
+        var settings = new NuGetPushSettings {
              Source = nugetFeed
-        });
+        };
+        if(string.IsNullOrEmpty(myGetApiKey)){
+            settings.ApiKey = myGetApiKey
+        }
+        NuGetPush(nupkg, settings);
     }
 });
 
