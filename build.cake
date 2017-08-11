@@ -13,7 +13,7 @@ var configuration           = Argument("configuration", "Release");
 var treatWarningsAsErrors   = Argument("treatWarningsAsErrors", "false");
 var solutionPath            = MakeAbsolute(File(Argument("solutionPath", "./ArchitectNow.Framework.sln")));
 var includeSymbols          = Argument("includeSymbols", "false");
-var myGetApiKey             = Argument("myGetApiKey", "")
+var myGetApiKey             = EnvironmentVariable("myGetApiKey");
 
 //////////////////////////////////////////////////////////////////////
 // PREPARATION
