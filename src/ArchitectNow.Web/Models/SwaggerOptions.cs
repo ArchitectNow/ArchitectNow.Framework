@@ -20,6 +20,7 @@ namespace ArchitectNow.Web.Models
 	    public string SwaggerUiRoute { get; set; } = "/docs";
 	    public IEnumerable<Type> Controllers { get; set; }
 	    public Action<SwaggerUiSettings> Configure { get; set; }
+	    
 	    public IList<IDocumentProcessor> DocumentProcessors { get; set; } = new List<IDocumentProcessor>();
 
 	    public SwaggerOptions(bool includeAuthorizationHeader = true)
