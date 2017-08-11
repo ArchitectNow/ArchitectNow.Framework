@@ -296,7 +296,7 @@ Task("MyGet-Upload-Artifacts")
              Source = nugetFeed
         };
         if(string.IsNullOrEmpty(myGetApiKey)){
-            settings.ApiKey = myGetApiKey
+            settings.ApiKey = myGetApiKey;
         }
         NuGetPush(nupkg, settings);
     }
