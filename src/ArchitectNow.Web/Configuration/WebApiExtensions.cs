@@ -21,7 +21,7 @@ namespace ArchitectNow.Web.Configuration
              *************************/
 
 			services.AddAntiforgery(options => options.HeaderName = "X-XSRF-TOKEN");
-
+			services.AddRouting(options => options.LowercaseUrls = true);
 			services.AddMvc(o =>
 				{
 					o.Filters.AddService(typeof(GlobalExceptionFilter));
