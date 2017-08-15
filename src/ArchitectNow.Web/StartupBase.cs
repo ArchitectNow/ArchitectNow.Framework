@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using ArchitectNow.Models.Options;
 using ArchitectNow.Web.Configuration;
+using ArchitectNow.Web.Models;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Hangfire;
@@ -15,7 +16,6 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using SwaggerOptions = ArchitectNow.Web.Models.SwaggerOptions;
 using AutoMapper;
-using NSwag.AspNetCore;
 
 namespace ArchitectNow.Web
 {
@@ -34,6 +34,9 @@ namespace ArchitectNow.Web
 
 		protected abstract IEnumerable<SwaggerOptions> SwaggerOptions { get; }
 
+		protected virtual FluentValidationOptions FluentValidationOptions { get; } =
+			new FluentValidationOptions {Enabled = true};
+			
 		protected IConfigurationRoot ConfigurationRoot => _configurationRoot;
 		protected IContainer ApplicationContainer { get; private set; }
 
@@ -49,7 +52,7 @@ namespace ArchitectNow.Web
 
 			services.ConfigureOptions();
 
-			services.ConfigureApi();
+			services.ConfigureApi(FluentValidationOptions);
 
             services.ConfigureAutomapper(ConfigureAutoMapper);
 
