@@ -1,5 +1,7 @@
 ﻿using System.IO;
+using ArchitectNow.Models.Options;
 using ArchitectNow.Web.Filters;
+using ArchitectNow.Web.Models;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -14,7 +16,7 @@ namespace ArchitectNow.Web.Configuration
 {
 	public static class WebApiExtensions
 	{
-		public static void ConfigureApi(this IServiceCollection services)
+		public static void ConfigureApi(this IServiceCollection services, FluentValidationOptions fluentValidationOptions)
 		{
 			/*************************
              * IConfiguration is not available yet
@@ -22,7 +24,7 @@ namespace ArchitectNow.Web.Configuration
 
 			services.AddAntiforgery(options => options.HeaderName = "X-XSRF-TOKEN");
 			services.AddRouting(options => options.LowercaseUrls = true);
-			services.AddMvc(o =>
+			var mvcBuilder = services.AddMvc(o =>
 				{
 					o.Filters.AddService(typeof(GlobalExceptionFilter));
 					o.ModelValidatorProviders.Clear();
@@ -45,7 +47,13 @@ namespace ArchitectNow.Web.Configuration
 						new IsoDateTimeConverter(),
 						new StringEnumConverter(true)
 					};
-				}).AddFluentValidation();
+				});
+
+
+			if (fluentValidationOptions.Enabled == true)
+			{
+				mvcBuilder.AddFluentValidation(configuration => fluentValidationOptions?.Configure(configuration));
+			}
 		}
 
 		public static void ConfigureAssets(this IApplicationBuilder app, IConfigurationRoot configurationRoot)
