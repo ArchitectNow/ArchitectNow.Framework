@@ -50,9 +50,9 @@ namespace ArchitectNow.Web.Configuration
 				});
 
 
-			if (fluentValidationOptions.Enabled == true)
+			if (fluentValidationOptions.Enabled)
 			{
-				mvcBuilder.AddFluentValidation(configuration => fluentValidationOptions?.Configure(configuration));
+				mvcBuilder.AddFluentValidation(configuration => fluentValidationOptions?.Configure?.Invoke(configuration));
 			}
 		}
 
