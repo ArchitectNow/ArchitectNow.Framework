@@ -37,6 +37,11 @@ namespace ArchitectNow.Web.Configuration
 			    {
 				    swaggerUiOwinSettings.DocumentProcessors.Add(optionDocumentProcessor);
 			    }
+
+			    foreach (var operationProcessor in option.OperationProcessors)
+			    {
+				    swaggerUiOwinSettings.OperationProcessors.Add(operationProcessor);
+			    }
 			    
 			    action?.Invoke(swaggerUiOwinSettings);
 			    if (option.Controllers?.Any() == true)

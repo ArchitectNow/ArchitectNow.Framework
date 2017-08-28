@@ -22,7 +22,7 @@ namespace ArchitectNow.Web.Models
 	    public Action<SwaggerUiSettings> Configure { get; set; }
 	    
 	    public IList<IDocumentProcessor> DocumentProcessors { get; set; } = new List<IDocumentProcessor>();
-
+	    public IList<IOperationProcessor> OperationProcessors { get; set; } = new List<IOperationProcessor>();
 	    public SwaggerOptions(bool includeAuthorizationHeader = true)
 	    {
 		    if (includeAuthorizationHeader)
