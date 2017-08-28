@@ -8,8 +8,8 @@ namespace ArchitectNow.Services
     {
 	    protected override void Load(ContainerBuilder builder)
 	    {
-		    builder.RegisterAssemblyTypes(ThisAssembly).AsImplementedInterfaces();
-		    builder.RegisterType<BaseCacheService<CachingOptions>>().As<ICacheService>().SingleInstance();
+		    builder.RegisterAssemblyTypes(ThisAssembly).AsImplementedInterfaces().PreserveExistingDefaults();
+		    builder.RegisterType<BaseCacheService<CachingOptions>>().As<ICacheService>().SingleInstance().PreserveExistingDefaults();
 	    }
     }
 }

@@ -17,45 +17,47 @@ namespace ArchitectNow.Web
         protected override void Load(ContainerBuilder builder)
         {
             var assembly = ThisAssembly;
-            builder.RegisterAssemblyTypes(assembly).AsImplementedInterfaces();
+            builder.RegisterAssemblyTypes(assembly).AsImplementedInterfaces().PreserveExistingDefaults();
 
-			builder.RegisterType<HttpContextAccessor>().As<IHttpContextAccessor>().SingleInstance();
-	        builder.RegisterType<RaygunJobFilter>().AsSelf().InstancePerLifetimeScope();
+            builder.RegisterType<HttpContextAccessor>().As<IHttpContextAccessor>().SingleInstance();
+            builder.RegisterType<RaygunJobFilter>().AsSelf().InstancePerLifetimeScope().PreserveExistingDefaults();
 
-			builder.RegisterType<GlobalExceptionFilter>().AsSelf().InstancePerLifetimeScope();
-			
-	        builder.Register(context =>
-		        {
-			        var configurationRoot = context.Resolve<IConfigurationRoot>();
-			        var issuerOptions = configurationRoot.GetSection("jwtIssuerOptions").Get<JwtIssuerOptions>();
-					
-			        var keyString = issuerOptions.Audience;
-					var keyBytes = Encoding.Unicode.GetBytes(keyString);
-			        var signingKey = new JwtSigningKey(keyBytes);
-			        return signingKey;
-		        })
-		        .AsSelf()
-		        .SingleInstance();
+            builder.RegisterType<GlobalExceptionFilter>().AsSelf().InstancePerLifetimeScope()
+                .PreserveExistingDefaults();
 
-	        builder.Register(context =>
-	        {
-		        var configurationRoot = context.Resolve<IConfigurationRoot>();
-		        var issuerOptions = configurationRoot.GetSection("jwtIssuerOptions").Get<JwtIssuerOptions>();
+            builder.Register(context =>
+                {
+                    var configurationRoot = context.Resolve<IConfigurationRoot>();
+                    var issuerOptions = configurationRoot.GetSection("jwtIssuerOptions").Get<JwtIssuerOptions>();
 
-		        var key = context.Resolve<JwtSigningKey>();
+                    var keyString = issuerOptions.Audience;
+                    var keyBytes = Encoding.Unicode.GetBytes(keyString);
+                    var signingKey = new JwtSigningKey(keyBytes);
+                    return signingKey;
+                })
+                .AsSelf()
+                .SingleInstance()
+                .PreserveExistingDefaults();
 
-		        issuerOptions.SigningCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature);
-		        
-		        return new OptionsWrapper<JwtIssuerOptions>(issuerOptions);
-	        }).As<IOptions<JwtIssuerOptions>>().InstancePerLifetimeScope();
+            builder.Register(context =>
+            {
+                var configurationRoot = context.Resolve<IConfigurationRoot>();
+                var issuerOptions = configurationRoot.GetSection("jwtIssuerOptions").Get<JwtIssuerOptions>();
 
-	        builder.Register(context =>
-	        {
-		        var configurationRoot = context.Resolve<IConfigurationRoot>();
-		        var key = configurationRoot["RaygunSettings:ApiKey"];
-		        var raygunClient = new RaygunClient(key);
-		        return raygunClient;
-	        }).AsSelf();
-		}
+                var key = context.Resolve<JwtSigningKey>();
+
+                issuerOptions.SigningCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature);
+
+                return new OptionsWrapper<JwtIssuerOptions>(issuerOptions);
+            }).As<IOptions<JwtIssuerOptions>>().InstancePerLifetimeScope().PreserveExistingDefaults();
+
+            builder.Register(context =>
+            {
+                var configurationRoot = context.Resolve<IConfigurationRoot>();
+                var key = configurationRoot["RaygunSettings:ApiKey"];
+                var raygunClient = new RaygunClient(key);
+                return raygunClient;
+            }).AsSelf().PreserveExistingDefaults();
+        }
     }
 }

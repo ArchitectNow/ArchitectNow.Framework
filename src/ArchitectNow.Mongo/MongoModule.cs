@@ -13,12 +13,12 @@ namespace ArchitectNow.Mongo
     {
 	    protected override void Load(ContainerBuilder builder)
 	    {
-		    builder.RegisterAssemblyTypes(ThisAssembly).AsImplementedInterfaces();
+		    builder.RegisterAssemblyTypes(ThisAssembly).AsImplementedInterfaces().PreserveExistingDefaults();
 
 		    builder.RegisterType<MongoDataContextService>().As<IDataContextService<MongoDataContext>>()
-			    .InstancePerLifetimeScope();
+			    .InstancePerLifetimeScope().PreserveExistingDefaults();
 			
-		    builder.Register(context => context.Resolve<IConfigurationRoot>().CreateOptions<MongoOptions>("mongo")).As<IOptions<MongoOptions>>().SingleInstance();
+		    builder.Register(context => context.Resolve<IConfigurationRoot>().CreateOptions<MongoOptions>("mongo")).As<IOptions<MongoOptions>>().SingleInstance().PreserveExistingDefaults();
 		}
     }
 }
