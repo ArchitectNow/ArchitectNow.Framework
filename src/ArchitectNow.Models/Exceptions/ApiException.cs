@@ -24,6 +24,11 @@ namespace ArchitectNow.Models.Exceptions
         }
 
         public abstract string GetContent();
+
+	    public virtual object GetRawContent()
+	    {
+		    return InternalContent;
+	    }
     }
 
     public class ApiException<TContent>: ApiException, IApiException<TContent>
@@ -56,5 +61,5 @@ namespace ArchitectNow.Models.Exceptions
 			}
 			return null;
 		}
-	}
+    }
 }

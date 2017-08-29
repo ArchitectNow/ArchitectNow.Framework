@@ -54,26 +54,31 @@ namespace ArchitectNow.Web.Services
                     message = apiException.GetBaseException().Message;
                 }
             }
-          
-	        var apiError = new ApiError
-	        {
-		        Error = content ?? message
-	        };
 
-	        if (!string.IsNullOrEmpty(stackTrace))
-	        {
-		        apiError.StackTrace = stackTrace;
-	        }
-
-            var objectResult = new ObjectResult(apiError)
-            {
-	            StatusCode = statusCode
-            };
-	        var eventId = new EventId(statusCode);
-
-	        _logger.LogError(eventId, exception, message);
-
-            return objectResult;
+	        return CreateActionResult(content, message, stackTrace, statusCode, exception);
         }
+
+	    protected virtual IActionResult CreateActionResult(string content, string message, string stackTrace, int statusCode, Exception exception)
+	    {
+		    var apiError = new ApiError
+		    {
+			    Error = content ?? message
+		    };
+
+		    if (!string.IsNullOrEmpty(stackTrace))
+		    {
+			    apiError.StackTrace = stackTrace;
+		    }
+
+		    var objectResult = new ObjectResult(apiError)
+		    {
+			    StatusCode = statusCode
+		    };
+		    var eventId = new EventId(statusCode);
+
+		    _logger.LogError(eventId, exception, message);
+
+		    return objectResult;
+	    }
     }
 }
