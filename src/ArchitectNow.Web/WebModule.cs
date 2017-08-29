@@ -17,13 +17,12 @@ namespace ArchitectNow.Web
         protected override void Load(ContainerBuilder builder)
         {
             var assembly = ThisAssembly;
-            builder.RegisterAssemblyTypes(assembly).AsImplementedInterfaces().PreserveExistingDefaults();
+            builder.RegisterAssemblyTypes(assembly).AsImplementedInterfaces();
 
             builder.RegisterType<HttpContextAccessor>().As<IHttpContextAccessor>().SingleInstance();
-            builder.RegisterType<RaygunJobFilter>().AsSelf().InstancePerLifetimeScope().PreserveExistingDefaults();
+            builder.RegisterType<RaygunJobFilter>().AsSelf().InstancePerLifetimeScope();
 
-            builder.RegisterType<GlobalExceptionFilter>().AsSelf().InstancePerLifetimeScope()
-                .PreserveExistingDefaults();
+            builder.RegisterType<GlobalExceptionFilter>().AsSelf().InstancePerLifetimeScope();
 
             builder.Register(context =>
                 {
@@ -36,8 +35,7 @@ namespace ArchitectNow.Web
                     return signingKey;
                 })
                 .AsSelf()
-                .SingleInstance()
-                .PreserveExistingDefaults();
+                .SingleInstance();
 
             builder.Register(context =>
             {
@@ -49,7 +47,7 @@ namespace ArchitectNow.Web
                 issuerOptions.SigningCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature);
 
                 return new OptionsWrapper<JwtIssuerOptions>(issuerOptions);
-            }).As<IOptions<JwtIssuerOptions>>().InstancePerLifetimeScope().PreserveExistingDefaults();
+            }).As<IOptions<JwtIssuerOptions>>().InstancePerLifetimeScope();
 
             builder.Register(context =>
             {
@@ -57,7 +55,7 @@ namespace ArchitectNow.Web
                 var key = configurationRoot["RaygunSettings:ApiKey"];
                 var raygunClient = new RaygunClient(key);
                 return raygunClient;
-            }).AsSelf().PreserveExistingDefaults();
+            }).AsSelf();
         }
     }
 }
