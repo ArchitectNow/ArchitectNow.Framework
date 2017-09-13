@@ -253,3 +253,5 @@ paket-files/
 tools
 VersionAssemblyInfo.cs
 .dotnet
+tools/*
+!tools/packages.config
