@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using ArchitectNow.Models.Options;
 using ArchitectNow.Web.Filters;
 using ArchitectNow.Web.Models;
 using FluentValidation.AspNetCore;
@@ -52,7 +51,7 @@ namespace ArchitectNow.Web.Configuration
 
 			if (fluentValidationOptions.Enabled)
 			{
-				mvcBuilder.AddFluentValidation(configuration => fluentValidationOptions?.Configure?.Invoke(configuration));
+				mvcBuilder.AddFluentValidation(configuration => fluentValidationOptions.Configure?.Invoke(configuration));
 			}
 		}
 

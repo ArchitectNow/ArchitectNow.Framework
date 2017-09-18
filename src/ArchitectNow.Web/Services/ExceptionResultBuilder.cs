@@ -1,6 +1,5 @@
 ﻿using System;
 using ArchitectNow.Models.Exceptions;
-using ArchitectNow.Models.Logging;
 using ArchitectNow.Models.ViewModels;
 using Autofac.Core;
 using Microsoft.AspNetCore.Hosting;

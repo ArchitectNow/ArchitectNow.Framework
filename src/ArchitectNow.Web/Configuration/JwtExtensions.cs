@@ -11,52 +11,59 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace ArchitectNow.Web.Configuration
 {
-	public static class JwtExtensions
-	{
-		public static void ConfigureJwt(this IApplicationBuilder app, IConfigurationRoot configurationRoot)
-		{
-			var jwtAppSettingOptions = configurationRoot.GetSection(nameof(JwtIssuerOptions));
-			var signingKey = app.ApplicationServices.GetService<JwtSigningKey>();
+    public static class JwtExtensions
+    {
+        public static void ConfigureJwt(this IServiceCollection services, IConfigurationRoot configurationRoot,
+            Func<JwtIssuerOptions, SecurityKey> signingKey)
+        {
+            var jwtAppSettingOptions = configurationRoot.GetSection(nameof(JwtIssuerOptions)).Get<JwtIssuerOptions>();
 
-			var tokenValidationParameters = new TokenValidationParameters
-			{
-				ValidateIssuer = true,
-				ValidIssuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)],
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidIssuer = jwtAppSettingOptions.Issuer,
 
-				ValidateAudience = true,
-				ValidAudience = jwtAppSettingOptions[nameof(JwtIssuerOptions.Audience)],
+                ValidateAudience = true,
+                ValidAudience = jwtAppSettingOptions.Audience,
 
-				ValidateIssuerSigningKey = true,
-				IssuerSigningKey = signingKey,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = signingKey(jwtAppSettingOptions),
 
-				RequireExpirationTime = true,
-				ValidateLifetime = true,
+                RequireExpirationTime = true,
+                ValidateLifetime = true,
 
-				ClockSkew = TimeSpan.Zero
-			};
+                ClockSkew = TimeSpan.Zero
+            };
 
-			app.UseJwtBearerAuthentication(new JwtBearerOptions
-			{
-				AutomaticAuthenticate = true,
-				AutomaticChallenge = true,
-				TokenValidationParameters = tokenValidationParameters,
-				Events = new JwtBearerEvents
-				{
-					OnMessageReceived = context =>
-					{
-						var task = Task.Run(() =>
-						{
-							if (context.Request.Query.TryGetValue("securityToken", out StringValues securityToken))
-							{
-								context.Token = securityToken.FirstOrDefault();
-							}
-						});
+            services.AddAuthentication(options =>
+                {
+                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = tokenValidationParameters;
+                    options.Events = new JwtBearerEvents
+                    {
+                        OnMessageReceived = context =>
+                        {
+                            var task = Task.Run(() =>
+                            {
+                                if (context.Request.Query.TryGetValue("securityToken", out StringValues securityToken))
+                                {
+                                    context.Token = securityToken.FirstOrDefault();
+                                }
+                            });
 
-						return task;
-					}
-				}
-			});
+                            return task;
+                        }
+                    };
+                });
+        }
 
-		}
-	}
+        public static void ConfigureJwt(this IApplicationBuilder app)
+        {
+            app.UseAuthentication();
+        }
+    }
 }

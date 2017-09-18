@@ -9,6 +9,7 @@ namespace ArchitectNow.Mongo.Models
         public MongoDataContext(DataContextOptions options): base(options)
         {
             ResetContext();
+            // ReSharper disable once VirtualMemberCallInConstructor
 	        EnvironmentName = Options?.Environment;
         }
 

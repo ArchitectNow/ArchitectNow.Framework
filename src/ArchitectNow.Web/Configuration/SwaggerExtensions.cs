@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using ArchitectNow.Models.Options;
 using ArchitectNow.Web.Models;
 using Microsoft.AspNetCore.Builder;
 using NJsonSchema;
-using NJsonSchema.Generation;
-using NSwag;
 using NSwag.AspNetCore;
 using NSwag.SwaggerGeneration;
-using NSwag.SwaggerGeneration.WebApi.Processors.Security;
 
 namespace ArchitectNow.Web.Configuration
 {
@@ -47,7 +42,7 @@ namespace ArchitectNow.Web.Configuration
 			    if (option.Controllers?.Any() == true)
 			    {
 				    app.UseSwaggerUi(option.Controllers, swaggerUiOwinSettings,
-					    new SwaggerJsonSchemaGenerator((JsonSchemaGeneratorSettings) swaggerUiOwinSettings));
+					    new SwaggerJsonSchemaGenerator(swaggerUiOwinSettings));
 			    }
 			    else
 			    {

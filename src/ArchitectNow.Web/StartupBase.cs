@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Text;
 using ArchitectNow.Models.Options;
+using ArchitectNow.Models.Security;
 using ArchitectNow.Web.Configuration;
 using ArchitectNow.Web.Models;
 using Autofac;
@@ -16,6 +18,7 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using SwaggerOptions = ArchitectNow.Web.Models.SwaggerOptions;
 using AutoMapper;
+using Microsoft.IdentityModel.Tokens;
 
 namespace ArchitectNow.Web
 {
@@ -52,6 +55,8 @@ namespace ArchitectNow.Web
 
 			services.ConfigureOptions();
 
+			services.ConfigureJwt(ConfigurationRoot, ConfigureSecurityKey);
+			
 			services.ConfigureApi(FluentValidationOptions);
 
             services.ConfigureAutomapper(ConfigureAutoMapper);
@@ -88,6 +93,14 @@ namespace ArchitectNow.Web
 		{
 
 		}
+
+		protected virtual SecurityKey ConfigureSecurityKey(JwtIssuerOptions issuerOptions)
+		{
+			var keyString = issuerOptions.Audience;
+			var keyBytes = Encoding.Unicode.GetBytes(keyString);
+			var signingKey = new JwtSigningKey(keyBytes);
+			return signingKey;
+		}
 		
         protected virtual void ConfigureAutoMapper(IMapperConfigurationExpression configurationExpression)
         {
@@ -106,7 +119,7 @@ namespace ArchitectNow.Web
 
 			env.ConfigureLogger(loggerFactory, ConfigurationRoot, ConfigureLoggingEnrichers, ConfigureLogging);
 
-			app.ConfigureJwt(ConfigurationRoot);
+			app.ConfigureJwt();
 
 			app.ConfigureAntiForgery(antiforgery);
 

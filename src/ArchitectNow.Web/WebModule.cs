@@ -1,9 +1,6 @@
-﻿using System;
-using System.Text;
-using ArchitectNow.Models.Security;
+﻿using ArchitectNow.Models.Security;
 using ArchitectNow.Web.Filters;
 using Autofac;
-using Autofac.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
@@ -23,19 +20,6 @@ namespace ArchitectNow.Web
             builder.RegisterType<RaygunJobFilter>().AsSelf().InstancePerLifetimeScope();
 
             builder.RegisterType<GlobalExceptionFilter>().AsSelf().InstancePerLifetimeScope();
-
-            builder.Register(context =>
-                {
-                    var configurationRoot = context.Resolve<IConfigurationRoot>();
-                    var issuerOptions = configurationRoot.GetSection("jwtIssuerOptions").Get<JwtIssuerOptions>();
-
-                    var keyString = issuerOptions.Audience;
-                    var keyBytes = Encoding.Unicode.GetBytes(keyString);
-                    var signingKey = new JwtSigningKey(keyBytes);
-                    return signingKey;
-                })
-                .AsSelf()
-                .SingleInstance();
 
             builder.Register(context =>
             {
