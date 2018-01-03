@@ -3,15 +3,15 @@
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <Authors>ArchitectNow</Authors>
     <Company>ArchitectNow</Company>
-    <Product>ArchitectNow.Services</Product>
-    <PackageId>ArchitectNow.Services</PackageId>
+    <Product>ArchitectNow.Caching</Product>
+    <PackageId>ArchitectNow.Caching</PackageId>
     <PackageProjectUrl>https://github.com/ArchitectNow/ArchitectNow.Framework</PackageProjectUrl>
     <PackageIconUrl>https://secure.gravatar.com/avatar/83fed82c32dc5424b4245cfc03d57b39?s=32&amp;r=g&amp;d=retro</PackageIconUrl>
     <RepositoryUrl>https://github.com/ArchitectNow/ArchitectNow.Framework</RepositoryUrl>
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
     <Copyright>Copyright © 2014-2017 ArchitectNow</Copyright>
     <PackageLicenseUrl>https://github.com/ArchitectNow/ArchitectNow.Framework/blob/master/LICENSE</PackageLicenseUrl>
-    <Description>ArchitectNow Framework - Services</Description>
+    <Description>ArchitectNow Framework - Models</Description>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
@@ -21,13 +21,13 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Autofac" Version="4.6.2" />
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="2.0.0" />
+    <PackageReference Include="CacheManager.Serialization.Json" Version="1.1.2" />
+    <PackageReference Include="CacheManager.StackExchange.Redis" Version="1.1.2" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.0.0" />
     <PackageReference Include="NETStandard.Library" Version="2.0.1" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\VersionAssemblyInfo.cs" Link="VersionAssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\ArchitectNow.Models\ArchitectNow.Models.csproj" />
   </ItemGroup>
 </Project>

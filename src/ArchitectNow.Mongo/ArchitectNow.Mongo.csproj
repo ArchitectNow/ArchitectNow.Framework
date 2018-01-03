@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <Authors>ArchitectNow</Authors>
@@ -14,32 +13,32 @@
     <PackageLicenseUrl>https://github.com/ArchitectNow/ArchitectNow.Framework/blob/master/LICENSE</PackageLicenseUrl>
     <Description>ArchitectNow Framework - Mongo</Description>
   </PropertyGroup>
-  
   <PropertyGroup>
-	<GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-	<GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
-	<GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
-	<GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
+    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+    <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
   </PropertyGroup>
-
   <ItemGroup>
-    <PackageReference Include="Autofac" Version="4.6.1" />
-    <PackageReference Include="FluentValidation" Version="7.1.1" />
+    <PackageReference Include="Autofac" Version="4.6.2" />
+    <PackageReference Include="FluentValidation" Version="7.3.4" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="2.0.0" />
     <PackageReference Include="MongoDB.Driver" Version="2.4.4" />
+    <PackageReference Include="NETStandard.Library" Version="2.0.1" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="4.4.0" />
   </ItemGroup>
-  
   <ItemGroup>
-		<Compile Include="..\..\VersionAssemblyInfo.cs" Link="VersionAssemblyInfo.cs" />
+    <Compile Include="..\..\VersionAssemblyInfo.cs" Link="VersionAssemblyInfo.cs" />
   </ItemGroup>
-  
   <ItemGroup>
+    <ProjectReference Include="..\ArchitectNow.Caching\ArchitectNow.Caching.csproj">
+      <Project>{23A4DB74-55C7-4447-A216-4ECC6CFFABD6}</Project>
+      <Name>ArchitectNow.Caching</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ArchitectNow.Services\ArchitectNow.Services.csproj" />
     <ProjectReference Include="..\ArchitectNow.Models\ArchitectNow.Models.csproj" />
   </ItemGroup>
-
 </Project>

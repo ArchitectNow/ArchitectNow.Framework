@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using NSwag;
 using NSwag.AspNetCore;
 using NSwag.SwaggerGeneration.Processors;
@@ -19,6 +20,7 @@ namespace ArchitectNow.Web.Models
 	    public string SwaggerRoute { get; set; } = "/docs/v1/swagger.json";
 	    public string SwaggerUiRoute { get; set; } = "/docs";
 	    public IEnumerable<Type> Controllers { get; set; }
+	    public Assembly ControllerAssembly { get; set; } = Assembly.GetEntryAssembly();
 	    public Action<SwaggerUiSettings> Configure { get; set; }
 	    
 	    public IList<IDocumentProcessor> DocumentProcessors { get; set; } = new List<IDocumentProcessor>();

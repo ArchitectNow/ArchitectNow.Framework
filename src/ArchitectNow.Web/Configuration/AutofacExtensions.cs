@@ -8,11 +8,10 @@ namespace ArchitectNow.Web.Configuration
 {
 	public static class AutofacExtensions
 	{
-		public static IContainer CreateAutofacContainer(this IServiceCollection services, IConfigurationRoot configurationRoot, Action<ContainerBuilder> additionalAction, params Module[] modules)
+		public static IContainer CreateAutofacContainer(this IServiceCollection services, Action<ContainerBuilder> additionalAction, params Module[] modules)
 		{
 			var builder = new ContainerBuilder();
-
-			builder.Register(ctx => configurationRoot).As<IConfigurationRoot>();
+			
 			builder.RegisterModule<WebModule>();
 			foreach (var module in modules)
 			{

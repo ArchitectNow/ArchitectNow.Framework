@@ -2,10 +2,8 @@
 using System.Reflection;
 using System.Text;
 using ArchitectNow.Models.Security;
-using ArchitectNow.Services;
 using ArchitectNow.Web.Configuration;
 using ArchitectNow.Web.Models;
-using ArchitectNow.Web.Sql.Configuration;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Antiforgery;
@@ -14,13 +12,14 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Serilog;
+using SwaggerOptions = ArchitectNow.Web.Models.SwaggerOptions;
 using Microsoft.IdentityModel.Tokens;
 using NJsonSchema;
-using Serilog;
 
-namespace ArchitectNow.Web.Sql
+namespace ArchitectNow.Web
 {
-	public sealed class Startup
+    public sealed class Startup
     {
         private readonly ILogger<Startup> _logger;
         private readonly IConfiguration _configuration;
@@ -78,14 +77,8 @@ namespace ArchitectNow.Web.Sql
             //last
             services.AddTransient<IStartupFilter, HangfireStartupFilter>();
 
-	        services.ConfigureHangfire( _configuration["redis:connectionString"], configuration => { });
-	        
             //last
-            _applicationContainer = services.CreateAutofacContainer(builder =>
-            {
-	            builder.RegisterModule<WebModule>();
-	            builder.RegisterModule<ServicesModule>();
-            });
+            _applicationContainer = services.CreateAutofacContainer(builder => { });
 
             // Create the IServiceProvider based on the container.
             var provider = new AutofacServiceProvider(_applicationContainer);

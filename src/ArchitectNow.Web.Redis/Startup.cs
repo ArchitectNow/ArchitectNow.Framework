@@ -5,7 +5,7 @@ using ArchitectNow.Models.Security;
 using ArchitectNow.Services;
 using ArchitectNow.Web.Configuration;
 using ArchitectNow.Web.Models;
-using ArchitectNow.Web.Sql.Configuration;
+using ArchitectNow.Web.Redis.Configuration;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Antiforgery;
@@ -18,7 +18,7 @@ using Microsoft.IdentityModel.Tokens;
 using NJsonSchema;
 using Serilog;
 
-namespace ArchitectNow.Web.Sql
+namespace ArchitectNow.Web.Redis
 {
 	public sealed class Startup
     {
@@ -78,7 +78,7 @@ namespace ArchitectNow.Web.Sql
             //last
             services.AddTransient<IStartupFilter, HangfireStartupFilter>();
 
-	        services.ConfigureHangfire( _configuration["redis:connectionString"], configuration => { });
+	        services.ConfigureHangfire( _configuration["redis:connectionString"], options => { }, configuration => { });
 	        
             //last
             _applicationContainer = services.CreateAutofacContainer(builder =>

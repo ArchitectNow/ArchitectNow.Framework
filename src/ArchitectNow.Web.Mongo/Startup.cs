@@ -2,10 +2,11 @@
 using System.Reflection;
 using System.Text;
 using ArchitectNow.Models.Security;
+using ArchitectNow.Mongo;
 using ArchitectNow.Services;
 using ArchitectNow.Web.Configuration;
 using ArchitectNow.Web.Models;
-using ArchitectNow.Web.Sql.Configuration;
+using ArchitectNow.Web.Mongo.Configuration;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Antiforgery;
@@ -18,7 +19,7 @@ using Microsoft.IdentityModel.Tokens;
 using NJsonSchema;
 using Serilog;
 
-namespace ArchitectNow.Web.Sql
+namespace ArchitectNow.Web.Mongo
 {
 	public sealed class Startup
     {
@@ -78,13 +79,14 @@ namespace ArchitectNow.Web.Sql
             //last
             services.AddTransient<IStartupFilter, HangfireStartupFilter>();
 
-	        services.ConfigureHangfire( _configuration["redis:connectionString"], configuration => { });
+	        services.ConfigureHangfire( _configuration["mongo:connectionString"], _configuration["mongo:connectionString"], configuration => { });
 	        
             //last
             _applicationContainer = services.CreateAutofacContainer(builder =>
             {
 	            builder.RegisterModule<WebModule>();
 	            builder.RegisterModule<ServicesModule>();
+	            builder.RegisterModule<MongoModule>();
             });
 
             // Create the IServiceProvider based on the container.

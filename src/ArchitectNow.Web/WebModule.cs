@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Mindscape.Raygun4Net;
 
 namespace ArchitectNow.Web
 {
@@ -32,14 +31,6 @@ namespace ArchitectNow.Web
 
                 return new OptionsWrapper<JwtIssuerOptions>(issuerOptions);
             }).As<IOptions<JwtIssuerOptions>>().InstancePerLifetimeScope();
-
-            builder.Register(context =>
-            {
-                var configurationRoot = context.Resolve<IConfigurationRoot>();
-                var key = configurationRoot["RaygunSettings:ApiKey"];
-                var raygunClient = new RaygunClient(key);
-                return raygunClient;
-            }).AsSelf();
         }
     }
 }
