@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using ArchitectNow.Caching;
 using ArchitectNow.Models.Logging;
 using ArchitectNow.Mongo.Models;
 using ArchitectNow.Services.Contexts;
@@ -23,23 +22,17 @@ namespace ArchitectNow.Mongo.Db
 
         private IMongoCollection<TModel> _collection;
 
-        private string _regionName = "";
-
-        private string _searchRegionName = "";
-
         protected BaseRepository(ILogger<TModel> logger, IMongoDbUtilities mongoDbUtilities,
-            IDataContextService<TDataContext> dataContextService, ICachingService cacheService,
+            IDataContextService<TDataContext> dataContextService,
             IValidator<TModel> validator = null)
         {
             _validator = validator ?? new InlineValidator<TModel>();
 
-            CacheService = cacheService;
             CurrentContext = dataContextService.GetDataContext();
             Logger = logger;
             DbUtilities = mongoDbUtilities;
         }
 
-        protected ICachingService CacheService { get; }
         protected TDataContext CurrentContext { get; }
         protected ILogger<TModel> Logger { get; }
         protected IMongoDbUtilities DbUtilities { get; }
@@ -58,44 +51,6 @@ namespace ArchitectNow.Mongo.Db
                     _collection = DbUtilities.Database.GetCollection<TModel>(CollectionName);
 
                 return _collection.AsQueryable();
-            }
-        }
-
-        /// <summary>
-        ///     Gets the name of the region.
-        /// </summary>
-        /// <value>
-        ///     The name of the region.
-        /// </value>
-        public string RegionName
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(_regionName))
-                {
-                    _regionName = BuildCacheKeyPrefix().Replace(".", "");
-                }
-
-                return _regionName;
-            }
-        }
-
-        /// <summary>
-        ///     Gets the name of the search region.
-        /// </summary>
-        /// <value>
-        ///     The name of the search region.
-        /// </value>
-        public string SearchRegionName
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(_searchRegionName))
-                {
-                    _searchRegionName = RegionName + ".Searches".Replace(".", "");
-                }
-
-                return _searchRegionName;
             }
         }
 
@@ -119,40 +74,28 @@ namespace ArchitectNow.Mongo.Db
 
         public virtual async Task<bool> DeleteAllAsync()
         {
-            CacheService.Clear(RegionName);
-            CacheService.Clear(SearchRegionName);
-
             var filter = new BsonDocument();
             await GetCollection().DeleteManyAsync(filter);
 
             return true;
         }
 
-        public virtual async Task<List<TModel>> GetAllAsync(bool onlyActive = true)
+        public virtual Task<List<TModel>> GetAllAsync(bool onlyActive = true)
         {
-            var cacheKey = BuildCacheKey(nameof(GetAllAsync), onlyActive);
+            Task<List<TModel>> results;
+            if (onlyActive)
+                results = GetCollection().Find(x => x.IsActive).ToListAsync();
+            else
+                results = GetCollection().Find(model => true).ToListAsync();
 
-            return await CacheService.GetOrAdd(cacheKey, s =>
-            {
-                Task<List<TModel>> results;
-                if (onlyActive)
-                    results = GetCollection().Find(x => x.IsActive).ToListAsync();
-                else
-                    results = GetCollection().Find(model => true).ToListAsync();
-
-                return results;
-            });
+            return results;
         }
 
-        public virtual async Task<TModel> GetOneAsync(Guid id)
+        public virtual Task<TModel> GetOneAsync(Guid id)
         {
-            var cacheKey = BuildCacheKey(nameof(GetOneAsync), id);
-            return await CacheService.GetOrAdd(cacheKey, s =>
-            {
-                var result = GetCollection().Find(x => x.Id == id).FirstOrDefaultAsync();
+            var result = GetCollection().Find(x => x.Id == id).FirstOrDefaultAsync();
 
-                return result;
-            });
+            return result;
         }
 
         public virtual async Task<TModel> SaveAsync(TModel item)
@@ -185,13 +128,6 @@ namespace ArchitectNow.Mongo.Db
                 CollectionName,
                 item.Id, item);
 
-            //make sure we update the cache...
-            var cacheKey = BuildCacheKey(nameof(GetOneAsync), item.Id);
-
-            CacheService.AddOrUpdate(cacheKey, item);
-
-            CacheService.Clear(SearchRegionName);
-            
             return item;
         }
 
@@ -203,20 +139,12 @@ namespace ArchitectNow.Mongo.Db
 
             Logger.LogInformation(EventIds.Update, "Entity Deleted to {CollectionName}: \'{id}\'", CollectionName, id);
 
-            var cacheKey = BuildCacheKey("GetOne", id);
-
-            CacheService.Remove<TModel>(cacheKey);
-
-            CacheService.Clear(SearchRegionName);
             return true;
         }
 
-        public virtual async Task<bool> DeleteAsync(TModel item)
+        public virtual Task<bool> DeleteAsync(TModel item)
         {
-            var cacheKey = BuildCacheKey(nameof(GetOneAsync), item.Id);
-            CacheService.Remove<TModel>(cacheKey);
-
-            return await DeleteAsync(item.Id);
+            return DeleteAsync(item.Id);
         }
 
         /// <summary>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using CacheManager.Core;
 
 namespace ArchitectNow.Caching
 {
@@ -14,7 +15,12 @@ namespace ArchitectNow.Caching
         Task<bool> RemoveAsync<T>(string key);
         Task ClearAsync(string region);
         Task ClearAllAsync();
-        T AddOrUpdate<T>(string key, T value);
-        Task<T> AddOrUpdateAsync<T>(string key, T value);
+        T Get<T>(string key);
+        bool Add<T>(string key, T value);
+        Task<T> GetAsync<T>(string key);
+        Task<bool> AddAsync<T>(string key, T value);
+        bool Add<T>(CacheItem<T> value);
+        CacheItem<T> GetOrAdd<T>(string key, Func<string, CacheItem<T>> valueFactory);
+        Task<CacheItem<T>> GetOrAddAsync<T>(string key, Func<string, CacheItem<T>> valueFactory);
     }
 }
