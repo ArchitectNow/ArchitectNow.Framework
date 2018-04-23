@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Reflection;
 using Microsoft.AspNetCore;
@@ -11,6 +12,7 @@ namespace ArchitectNow.Web
 {
     public class WebStarter<TStartup> where TStartup : class
     {
+        [SuppressMessage("ReSharper", "AssignNullToNotNullAttribute")]
         public int Run(string[] args, Action<LoggerConfiguration> configureLogger)
         {
             var baseDir = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);

@@ -65,9 +65,9 @@ namespace ArchitectNow.Web.Redis
                     Configure = settings =>
                     {
                         settings.UseJsonEditor = false;
-                        settings.DefaultEnumHandling = EnumHandling.String;
-                        settings.DefaultPropertyNameHandling = PropertyNameHandling.CamelCase;
-                        settings.Version = Assembly.GetEntryAssembly().GetName().Version.ToString();
+                        settings.GeneratorSettings.DefaultEnumHandling = EnumHandling.String;
+                        settings.GeneratorSettings.DefaultPropertyNameHandling = PropertyNameHandling.CamelCase;
+                        settings.GeneratorSettings.Version = Assembly.GetEntryAssembly().GetName().Version.ToString();
                     },
                 });
             });
