@@ -109,7 +109,7 @@ namespace ArchitectNow.Web.Mongo
             IApplicationBuilder app,
             IApplicationLifetime appLifetime,
             IAntiforgery antiforgery,
-            IConfigurationRoot configurationRoot)
+            IConfiguration configuration)
         {
             _logger.LogInformation($"{nameof(Configure)} starting...");
 

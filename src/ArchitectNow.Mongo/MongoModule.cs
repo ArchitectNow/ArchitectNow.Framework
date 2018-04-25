@@ -18,7 +18,7 @@ namespace ArchitectNow.Mongo
 		    builder.RegisterType<MongoDataContextService>().As<IDataContextService<MongoDataContext>>()
 			    .InstancePerLifetimeScope();
 			
-		    builder.Register(context => context.Resolve<IConfigurationRoot>().CreateOptions<MongoOptions>("mongo")).As<IOptions<MongoOptions>>().SingleInstance();
+		    builder.Register(context => context.Resolve<IConfiguration>().CreateOptions<MongoOptions>("mongo")).As<IOptions<MongoOptions>>().SingleInstance();
 		}
     }
 }

@@ -12,9 +12,9 @@ namespace ArchitectNow.Caching
             builder.RegisterType<CacheMangerFactory>().As<ICacheMangerFactory>().SingleInstance();
             builder.RegisterGeneric(typeof(CacheKeeper<>)).As(typeof(ICacheKeeper<>)).SingleInstance();
 
-            builder.Register(context => context.Resolve<IConfigurationRoot>().CreateOptions<RedisOptions>("redis")).AsSelf().SingleInstance();
+            builder.Register(context => context.Resolve<IConfiguration>().CreateOptions<RedisOptions>("redis")).AsSelf().SingleInstance();
             
-            builder.Register(context => context.Resolve<IConfigurationRoot>().CreateOptions<CachingOptions>("caching")).AsSelf().SingleInstance();
+            builder.Register(context => context.Resolve<IConfiguration>().CreateOptions<CachingOptions>("caching")).AsSelf().SingleInstance();
             
         }
     }

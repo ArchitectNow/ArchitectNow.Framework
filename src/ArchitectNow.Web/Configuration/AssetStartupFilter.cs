@@ -13,10 +13,10 @@ namespace ArchitectNow.Web.Configuration
         {
             return builder =>
             {
-                var configurationRoot = builder.ApplicationServices.GetService<IConfigurationRoot>();
+                var configuration = builder.ApplicationServices.GetService<IConfiguration>();
                 builder.UseFileServer();
 
-                var uploadsPath = configurationRoot["uploadsPath"] ?? Path.Combine(Directory.GetCurrentDirectory(), "uploads");
+                var uploadsPath = configuration["uploadsPath"] ?? Path.Combine(Directory.GetCurrentDirectory(), "uploads");
                 if (!Directory.Exists(uploadsPath))
                 {
                     Directory.CreateDirectory(uploadsPath);

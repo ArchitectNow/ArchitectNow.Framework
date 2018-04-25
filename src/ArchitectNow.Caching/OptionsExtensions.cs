@@ -5,9 +5,9 @@ namespace ArchitectNow.Caching
 {
     static class OptionsExtensions
     {
-        public static IOptions<TOptions> CreateOptions<TOptions>(this IConfigurationRoot configurationRoot, string section) where TOptions : class, new()
+        public static IOptions<TOptions> CreateOptions<TOptions>(this IConfiguration configuration, string section) where TOptions : class, new()
         {
-            return new OptionsWrapper<TOptions>(configurationRoot.GetSection(section).Get<TOptions>());
+            return new OptionsWrapper<TOptions>(configuration.GetSection(section).Get<TOptions>());
         }
     }
 }

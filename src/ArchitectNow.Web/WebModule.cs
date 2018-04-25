@@ -22,8 +22,8 @@ namespace ArchitectNow.Web
 
             builder.Register(context =>
             {
-                var configurationRoot = context.Resolve<IConfigurationRoot>();
-                var issuerOptions = configurationRoot.GetSection("jwtIssuerOptions").Get<JwtIssuerOptions>();
+                var configuration = context.Resolve<IConfiguration>();
+                var issuerOptions = configuration.GetSection("jwtIssuerOptions").Get<JwtIssuerOptions>();
 
                 var key = context.Resolve<JwtSigningKey>();
 
