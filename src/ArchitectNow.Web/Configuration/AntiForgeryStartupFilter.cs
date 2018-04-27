@@ -26,6 +26,7 @@ namespace ArchitectNow.Web.Configuration
 
 					return n(context);
 				});
+				next(builder);
 			};
 		}
 	}

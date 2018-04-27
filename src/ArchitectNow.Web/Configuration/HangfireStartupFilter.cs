@@ -14,14 +14,14 @@ namespace ArchitectNow.Web.Configuration
 		{
 			return builder =>
 			{
-				next(builder);
-
 				if (UseHangfireServer)
 				{
 					builder.UseHangfireServer();
 				}
 			
 				builder.UseHangfireDashboard(HangfireDashboardUrl, ConfigureDashboard());
+				
+				next(builder);
 			};
 		}
 

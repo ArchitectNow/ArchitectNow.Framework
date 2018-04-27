@@ -37,6 +37,8 @@ namespace ArchitectNow.Web.Configuration
                         builder.UseSwaggerUi(option.ControllerAssembly, settings => { ConfigureSettings(settings, option); });
                     }
                 }
+                
+                next(builder);
             };
         }
 

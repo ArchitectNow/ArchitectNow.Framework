@@ -23,6 +23,8 @@ namespace ArchitectNow.Web.Configuration
                 }
 
                 builder.UseStaticFiles();
+                
+                next(builder);
             };
         }
     }

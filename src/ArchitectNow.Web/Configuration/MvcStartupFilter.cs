@@ -10,6 +10,7 @@ namespace ArchitectNow.Web.Configuration
             return builder =>
             {
                 builder.UseMvc();
+                next(builder);
             };
         }
     }

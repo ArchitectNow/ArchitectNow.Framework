@@ -8,7 +8,11 @@ namespace ArchitectNow.Web.Configuration
     {
         public Action<IApplicationBuilder> Configure(Action<IApplicationBuilder> next)
         {
-            return builder => { builder.UseAuthentication(); };
+            return builder =>
+            {
+                builder.UseAuthentication(); 
+                next(builder);
+            };
         }
     }
 }
