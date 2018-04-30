@@ -1,5 +1,6 @@
 using System;
 using Hangfire;
+using Hangfire.Mongo;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ArchitectNow.Web.Mongo.Configuration
@@ -10,6 +11,8 @@ namespace ArchitectNow.Web.Mongo.Configuration
 		{
 			services.AddHangfire(globalConfiguration =>
 			{
+				//do not upgrade past 0.5.9
+				globalConfiguration.UseMongoStorage(connectionString, databaseName);
 				setupAction?.Invoke(globalConfiguration);
 			});
 		}
