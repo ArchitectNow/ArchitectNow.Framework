@@ -13,8 +13,6 @@ namespace ArchitectNow.Mongo
     {
 	    protected override void Load(ContainerBuilder builder)
 	    {
-		    builder.RegisterAssemblyTypes(ThisAssembly).AsImplementedInterfaces();
-
 		    builder.RegisterType<MongoDataContextService>().As<IDataContextService<MongoDataContext>>()
 			    .InstancePerLifetimeScope();
 			
