@@ -19,19 +19,7 @@ namespace ArchitectNow.Web
             
             builder.RegisterType<HttpContextAccessor>().As<IHttpContextAccessor>().SingleInstance();
 
-            builder.RegisterType<GlobalExceptionFilter>().AsSelf().InstancePerLifetimeScope();
-
-            builder.Register(context =>
-            {
-                var configuration = context.Resolve<IConfiguration>();
-                var issuerOptions = configuration.GetSection("jwtIssuerOptions").Get<JwtIssuerOptions>();
-
-                var key = context.Resolve<JwtSigningKey>();
-
-                issuerOptions.SigningCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature);
-
-                return new OptionsWrapper<JwtIssuerOptions>(issuerOptions);
-            }).As<IOptions<JwtIssuerOptions>>().InstancePerLifetimeScope();
+            builder.RegisterType<GlobalExceptionFilter>().AsSelf().InstancePerLifetimeScope();            
         }
     }
 }
