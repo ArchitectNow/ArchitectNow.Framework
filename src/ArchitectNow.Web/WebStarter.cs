@@ -26,7 +26,7 @@ namespace ArchitectNow.Web
                 .Enrich.FromLogContext()
                 .WriteTo
                 .RollingFile($@"{logPath}\{{Date}}.txt", retainedFileCountLimit: 10, shared: true)
-                .WriteTo.ColoredConsole();
+                .WriteTo.Console();
             
             configureLogger?.Invoke(loggerConfiguration);
             
