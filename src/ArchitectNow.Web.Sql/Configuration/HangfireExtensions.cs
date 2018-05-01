@@ -6,13 +6,12 @@ namespace ArchitectNow.Web.Sql.Configuration
 {
 	static class HangfireExtensions
 	{
-		public static void ConfigureHangfire(this IServiceCollection services, Func<string> getConnectionString, Action<IGlobalConfiguration> setupAction = null)
+		public static void ConfigureHangfire(this IServiceCollection services, string connectionString, Action<IGlobalConfiguration> configureHangfire = null)
 		{
 			services.AddHangfire(globalConfiguration =>
 			{
-				var connectionString = getConnectionString();
+				configureHangfire?.Invoke(globalConfiguration);
 				globalConfiguration.UseSqlServerStorage(connectionString);
-				setupAction?.Invoke(globalConfiguration);
 			});
 		}
 	}

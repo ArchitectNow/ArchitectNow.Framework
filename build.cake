@@ -147,6 +147,15 @@ Task("DotNet-MsBuild")
             .WithProperty("TreatWarningsAsErrors", treatWarningsAsErrors)
             .WithTarget("Build")
         );
+
+        MSBuild("src/ArchitectNow.Caching/ArchitectNow.Caching.csproj", c => c
+            .SetConfiguration(configuration)
+            .SetVerbosity(Verbosity.Minimal)
+            .UseToolVersion(MSBuildToolVersion.VS2017)
+            .WithProperty("TreatWarningsAsErrors", treatWarningsAsErrors)
+            .WithProperty("AssemblyVersion")
+            .WithTarget("Build")
+        );
         
         MSBuild("src/ArchitectNow.Web/ArchitectNow.Web.csproj", c => c
             .SetConfiguration(configuration)
@@ -220,6 +229,15 @@ Task("DotNet-MsBuild-Pack")
             .WithTarget("Pack"));
 
         MSBuild("src/ArchitectNow.Services/ArchitectNow.Services.csproj", c => c
+            .SetConfiguration(configuration)
+            .SetVerbosity(Verbosity.Normal)
+            .UseToolVersion(MSBuildToolVersion.VS2017)
+            .WithProperty("PackageVersion", versionInfo.NuGetVersionV2)
+            .WithProperty("NoBuild", "true")
+            .WithProperty("IncludeSymbols", includeSymbols)
+            .WithTarget("Pack"));
+
+        MSBuild("src/ArchitectNow.Caching/ArchitectNow.Caching.csproj", c => c
             .SetConfiguration(configuration)
             .SetVerbosity(Verbosity.Normal)
             .UseToolVersion(MSBuildToolVersion.VS2017)

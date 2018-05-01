@@ -30,21 +30,17 @@ namespace ArchitectNow.Web.Services
             string content = null;
             var message = exception.GetBaseException().Message;
 
-            var dependencyResolutionException = exception as DependencyResolutionException;
-            if (dependencyResolutionException != null)
+	        if (exception is DependencyResolutionException)
             {
                 message = $"Dependency Exception: Please ensure that classes implement the interface: {message}";
             }
 
-	        var notFoundException = exception as NotFoundException;
-	        if (notFoundException != null)
+	        if (exception is NotFoundException)
 	        {
 		        return new NotFoundResult();
 	        }
 
-            var apiException = exception as ApiException;
-
-            if (apiException != null)
+	        if (exception is ApiException apiException)
             {
                 statusCode = (int)apiException.StatusCode;
                 content = apiException.GetContent();

@@ -1,5 +1,4 @@
-﻿using ArchitectNow.Services.Caching;
-using ArchitectNow.Services.Options;
+﻿using ArchitectNow.Services.Contexts;
 using Autofac;
 
 namespace ArchitectNow.Services
@@ -8,8 +7,7 @@ namespace ArchitectNow.Services
     {
 	    protected override void Load(ContainerBuilder builder)
 	    {
-		    builder.RegisterAssemblyTypes(ThisAssembly).AsImplementedInterfaces();
-		    builder.RegisterType<BaseCacheService<CachingOptions>>().As<ICacheService>().SingleInstance();
+		    builder.RegisterGeneric(typeof(DataContextService<,>)).As(typeof(IDataContextService<>));
 	    }
     }
 }

@@ -1,15 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 using NSwag;
 using NSwag.AspNetCore;
 using NSwag.SwaggerGeneration.Processors;
-using NSwag.SwaggerGeneration.WebApi.Processors.Security;
+using NSwag.SwaggerGeneration.Processors.Security;
+using NSwag.SwaggerGeneration.WebApi;
 
 namespace ArchitectNow.Web.Models
 {
     public class SwaggerOptions
     {
+	    [SuppressMessage("ReSharper", "UnusedMember.Global")]
 	    public readonly string DefaultSwaggerRoute = "/docs/v1/swagger.json";
+
+	    [SuppressMessage("ReSharper", "UnusedMember.Global")]
 	    public readonly string DefaultSwaggerUiRoute = "/docs";
 	    
 	    public string Name { get; set; }
@@ -19,10 +25,14 @@ namespace ArchitectNow.Web.Models
 	    public string SwaggerRoute { get; set; } = "/docs/v1/swagger.json";
 	    public string SwaggerUiRoute { get; set; } = "/docs";
 	    public IEnumerable<Type> Controllers { get; set; }
-	    public Action<SwaggerUiSettings> Configure { get; set; }
+	    public Assembly ControllerAssembly { get; set; } = Assembly.GetEntryAssembly();
+	    public Action<SwaggerUiSettings<WebApiToSwaggerGeneratorSettings>> Configure { get; set; }
 	    
 	    public IList<IDocumentProcessor> DocumentProcessors { get; set; } = new List<IDocumentProcessor>();
+	    
+	    [SuppressMessage("ReSharper", "CollectionNeverUpdated.Global")]
 	    public IList<IOperationProcessor> OperationProcessors { get; set; } = new List<IOperationProcessor>();
+	    
 	    public SwaggerOptions(bool includeAuthorizationHeader = true)
 	    {
 		    if (includeAuthorizationHeader)

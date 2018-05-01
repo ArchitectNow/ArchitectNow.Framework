@@ -21,8 +21,5 @@ namespace ArchitectNow.Mongo.Db
         string CollectionName { get; }
         Task ConfigureIndexes();
         bool HasValidUser();
-        string RegionName { get; }
-        string SearchRegionName { get; }
-
     }
 }

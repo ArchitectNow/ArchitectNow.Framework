@@ -15,10 +15,5 @@ namespace ArchitectNow.Web.Configuration
 			    options.Providers.Add<GzipCompressionProvider>();
 		    });
 	    }
-
-	    public static void ConfigureCompression(this IApplicationBuilder app)
-	    {
-			app.UseResponseCompression();
-		}
 	}
 }
