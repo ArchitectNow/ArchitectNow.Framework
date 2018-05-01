@@ -21,7 +21,7 @@ namespace ArchitectNow.Web.Configuration
 		{
 			return builder =>
 			{
-				_logger.LogInformation($"Configure End: {nameof(HangfireStartupFilter)}");
+				_logger.LogInformation($"Configure Start: {nameof(HangfireStartupFilter)}");
 
 				if (UseHangfireServer)
 				{

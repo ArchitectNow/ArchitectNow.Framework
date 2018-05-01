@@ -50,9 +50,7 @@ namespace ArchitectNow.Web.Mongo
             services.ConfigureCompression();
 
             //Register startup filters (order matters)
-            services.AddTransient<IStartupFilter, JwtStartupFilter>();
             services.AddTransient<IStartupFilter, AntiForgeryStartupFilter>();
-            services.AddTransient<IStartupFilter, AssetStartupFilter>();
             services.AddTransient<IStartupFilter, SwaggerStartupFilter>(serviceProvider =>
             {
                 return new SwaggerStartupFilter( serviceProvider.GetService<ILogger<SwaggerStartupFilter>>(), 
@@ -74,9 +72,6 @@ namespace ArchitectNow.Web.Mongo
                 });
             });
 
-            services.AddTransient<IStartupFilter, CompressionStartupFilter>();
-            services.AddTransient<IStartupFilter, MvcStartupFilter>();
-            
             //last
             services.AddTransient<IStartupFilter, HangfireStartupFilter>();
 
