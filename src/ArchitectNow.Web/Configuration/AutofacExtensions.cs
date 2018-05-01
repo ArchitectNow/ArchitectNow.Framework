@@ -7,7 +7,7 @@ namespace ArchitectNow.Web.Configuration
 {
 	public static class AutofacExtensions
 	{
-		public static IContainer CreateAutofacContainer(this IServiceCollection services, Action<ContainerBuilder> additionalAction, params Module[] modules)
+		public static IContainer CreateAutofacContainer(this IServiceCollection services, Action<ContainerBuilder, IServiceCollection> additionalAction, params Module[] modules)
 		{
 			var builder = new ContainerBuilder();
 			
@@ -17,7 +17,7 @@ namespace ArchitectNow.Web.Configuration
 				builder.RegisterModule(module);
 			}
 
-			additionalAction?.Invoke(builder);
+			additionalAction?.Invoke(builder, services);
 
 			builder.Populate(services);
 			

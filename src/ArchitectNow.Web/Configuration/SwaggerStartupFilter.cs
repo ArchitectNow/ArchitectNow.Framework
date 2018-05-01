@@ -3,6 +3,7 @@ using System.Linq;
 using ArchitectNow.Web.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Logging;
 using NJsonSchema;
 using NSwag.AspNetCore;
 using NSwag.SwaggerGeneration.WebApi;
@@ -11,10 +12,12 @@ namespace ArchitectNow.Web.Configuration
 {
     public class SwaggerStartupFilter : IStartupFilter
     {
+        private readonly ILogger<SwaggerStartupFilter> _logger;
         protected SwaggerOptions[] Options { get; }
 
-        public SwaggerStartupFilter(params SwaggerOptions[] options)
+        public SwaggerStartupFilter(ILogger<SwaggerStartupFilter> logger, params SwaggerOptions[] options)
         {
+            _logger = logger;
             Options = options;
         }
 
@@ -22,6 +25,8 @@ namespace ArchitectNow.Web.Configuration
         {
             return builder =>
             {
+                _logger.LogInformation($"Configure Start: {nameof(SwaggerStartupFilter)}");
+
                 foreach (var option in Options)
                 {
                     
@@ -39,6 +44,7 @@ namespace ArchitectNow.Web.Configuration
                 }
                 
                 next(builder);
+                _logger.LogInformation($"Configure End: {nameof(SwaggerStartupFilter)}");
             };
         }
 

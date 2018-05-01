@@ -24,12 +24,6 @@ namespace ArchitectNow.Web.Configuration
 				{
 					o.Filters.AddService(typeof(GlobalExceptionFilter));
 					o.ModelValidatorProviders.Clear();
-
-					var policy = new AuthorizationPolicyBuilder()
-						.RequireAuthenticatedUser()
-						.Build();
-
-					o.Filters.Add(new AuthorizeFilter(policy));
 				})
 				.AddJsonOptions(options =>
 				{

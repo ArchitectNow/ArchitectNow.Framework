@@ -20,13 +20,13 @@ using Serilog;
 
 namespace ArchitectNow.Web.Sql
 {
-	public sealed class Startup
+	public sealed class StartupSample
     {
-        private readonly ILogger<Startup> _logger;
+        private readonly ILogger<StartupSample> _logger;
         private readonly IConfiguration _configuration;
         private IContainer _applicationContainer;
 
-        public Startup(ILogger<Startup> logger, IConfiguration configuration)
+        public StartupSample(ILogger<StartupSample> logger, IConfiguration configuration)
         {
             _logger = logger;
             _configuration = configuration;
@@ -54,7 +54,8 @@ namespace ArchitectNow.Web.Sql
             services.AddTransient<IStartupFilter, AssetStartupFilter>();
             services.AddTransient<IStartupFilter, SwaggerStartupFilter>(serviceProvider =>
             {
-                return new SwaggerStartupFilter(new SwaggerOptions
+                return new SwaggerStartupFilter( serviceProvider.GetService<ILogger<SwaggerStartupFilter>>(),
+                    new SwaggerOptions
                 {
                     Version = "1.0",
                     Title = "API",
@@ -81,7 +82,7 @@ namespace ArchitectNow.Web.Sql
 	        services.ConfigureHangfire( _configuration["redis:connectionString"], configuration => { });
 	        
             //last
-            _applicationContainer = services.CreateAutofacContainer(builder =>
+            _applicationContainer = services.CreateAutofacContainer((builder, serviceCollection) =>
             {
 	            builder.RegisterModule<WebModule>();
 	            builder.RegisterModule<ServicesModule>();
