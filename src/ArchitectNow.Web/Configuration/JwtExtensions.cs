@@ -1,62 +1,46 @@
 using System;
-using System.Linq;
-using System.Threading.Tasks;
 using ArchitectNow.Models.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Primitives;
 using Microsoft.IdentityModel.Tokens;
 
 namespace ArchitectNow.Web.Configuration
 {
-	public static class JwtExtensions
-	{
-		public static void ConfigureJwt(this IApplicationBuilder app, IConfigurationRoot configurationRoot)
-		{
-			var jwtAppSettingOptions = configurationRoot.GetSection(nameof(JwtIssuerOptions));
-			var signingKey = app.ApplicationServices.GetService<JwtSigningKey>();
+    public static class JwtExtensions
+    {
+        public static void ConfigureJwt(this IServiceCollection services, IConfiguration configurationRoot,
+            Func<JwtIssuerOptions, JwtSigningKey> signingKey, JwtBearerEvents jwtBearerEvents = null)
+        {
+            var jwtAppSettingOptions = configurationRoot.GetSection(nameof(JwtIssuerOptions)).Get<JwtIssuerOptions>();
 
-			var tokenValidationParameters = new TokenValidationParameters
-			{
-				ValidateIssuer = true,
-				ValidIssuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)],
+            var issuerSigningKey = signingKey(jwtAppSettingOptions);
+            
+            services.AddSingleton(issuerSigningKey);
 
-				ValidateAudience = true,
-				ValidAudience = jwtAppSettingOptions[nameof(JwtIssuerOptions.Audience)],
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidIssuer = jwtAppSettingOptions.Issuer,
 
-				ValidateIssuerSigningKey = true,
-				IssuerSigningKey = signingKey,
+                ValidateAudience = true,
+                ValidAudience = jwtAppSettingOptions.Audience,
 
-				RequireExpirationTime = true,
-				ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = issuerSigningKey,
+                
+                RequireExpirationTime = true,
+                ValidateLifetime = true,
 
-				ClockSkew = TimeSpan.Zero
-			};
+                ClockSkew = TimeSpan.Zero
+            };
 
-			app.UseJwtBearerAuthentication(new JwtBearerOptions
-			{
-				AutomaticAuthenticate = true,
-				AutomaticChallenge = true,
-				TokenValidationParameters = tokenValidationParameters,
-				Events = new JwtBearerEvents
-				{
-					OnMessageReceived = context =>
-					{
-						var task = Task.Run(() =>
-						{
-							if (context.Request.Query.TryGetValue("securityToken", out StringValues securityToken))
-							{
-								context.Token = securityToken.FirstOrDefault();
-							}
-						});
-
-						return task;
-					}
-				}
-			});
-
-		}
-	}
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = tokenValidationParameters;
+                    options.Events = jwtBearerEvents ?? new JwtBearerEvents();
+                });
+        }
+    }
 }

@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFrameworks>netstandard1.6</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <Authors>ArchitectNow</Authors>
     <Company>ArchitectNow</Company>
     <Product>ArchitectNow.Services</Product>
@@ -10,27 +9,25 @@
     <PackageIconUrl>https://secure.gravatar.com/avatar/83fed82c32dc5424b4245cfc03d57b39?s=32&amp;r=g&amp;d=retro</PackageIconUrl>
     <RepositoryUrl>https://github.com/ArchitectNow/ArchitectNow.Framework</RepositoryUrl>
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
-    <Copyright>Copyright © 2014-2017 ArchitectNow</Copyright>
+    <Copyright>Copyright © 2014-2018 ArchitectNow</Copyright>
     <PackageLicenseUrl>https://github.com/ArchitectNow/ArchitectNow.Framework/blob/master/LICENSE</PackageLicenseUrl>
     <Description>ArchitectNow Framework - Services</Description>
   </PropertyGroup>
-  
   <PropertyGroup>
-	<GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-	<GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
-	<GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
-	<GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
+    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+    <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
   </PropertyGroup>
-
   <ItemGroup>
-    <PackageReference Include="Autofac" Version="4.6.0" />
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="1.1.2" />
+    <PackageReference Include="Autofac" Version="4.8.0" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="2.0.1" />
+    <PackageReference Include="NETStandard.Library" Version="2.0.2" />
   </ItemGroup>
   <ItemGroup>
-		<Compile Include="..\..\VersionAssemblyInfo.cs" Link="VersionAssemblyInfo.cs" />
+    <Compile Include="..\..\VersionAssemblyInfo.cs" Link="VersionAssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ArchitectNow.Models\ArchitectNow.Models.csproj" />
   </ItemGroup>
-
 </Project>

@@ -1,4 +1,5 @@
 ﻿using ArchitectNow.Models.Options;
+using ArchitectNow.Mongo.Db;
 using ArchitectNow.Mongo.Models;
 using ArchitectNow.Mongo.Options;
 using ArchitectNow.Mongo.Services;
@@ -13,12 +14,13 @@ namespace ArchitectNow.Mongo
     {
 	    protected override void Load(ContainerBuilder builder)
 	    {
-		    builder.RegisterAssemblyTypes(ThisAssembly).AsImplementedInterfaces();
-
 		    builder.RegisterType<MongoDataContextService>().As<IDataContextService<MongoDataContext>>()
 			    .InstancePerLifetimeScope();
 			
-		    builder.Register(context => context.Resolve<IConfigurationRoot>().CreateOptions<MongoOptions>("mongo")).As<IOptions<MongoOptions>>().SingleInstance();
+		    builder.RegisterType<MongoDbUtilities>().As<IMongoDbUtilities>()
+			    .SingleInstance();
+
+		    builder.Register(context => context.Resolve<IConfiguration>().CreateOptions<MongoOptions>("mongo")).As<IOptions<MongoOptions>>().SingleInstance();
 		}
     }
 }

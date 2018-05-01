@@ -5,14 +5,14 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ArchitectNow.Web.Mongo.Configuration
 {
-	static class HangfireExtensions
+	public static class HangfireExtensions
 	{
-		public static void ConfigureHangfire(this IServiceCollection services, Func<string> getConnectionString, string databaseName, Action<IGlobalConfiguration> setupAction = null)
+		public static void ConfigureHangfire(this IServiceCollection services, string connectionString, string databaseName, Action<IGlobalConfiguration> setupAction = null)
 		{
 			services.AddHangfire(globalConfiguration =>
 			{
-				var connectionString = getConnectionString();
-				//globalConfiguration.UseMongoStorage(connectionString, databaseName);
+				//do not upgrade past 0.5.9
+				globalConfiguration.UseMongoStorage(connectionString, databaseName);
 				setupAction?.Invoke(globalConfiguration);
 			});
 		}

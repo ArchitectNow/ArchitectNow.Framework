@@ -251,7 +251,6 @@ paket-files/
 .idea/
 *.sln.iml
 tools
-VersionAssemblyInfo.cs
 .dotnet
 tools/*
 !tools/packages.config
