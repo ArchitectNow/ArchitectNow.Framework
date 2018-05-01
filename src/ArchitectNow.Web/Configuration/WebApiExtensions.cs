@@ -1,8 +1,6 @@
 ﻿using ArchitectNow.Web.Filters;
 using ArchitectNow.Web.Models;
 using FluentValidation.AspNetCore;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;

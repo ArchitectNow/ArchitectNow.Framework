@@ -10,9 +10,13 @@ namespace ArchitectNow.Web.Configuration
     public static class JwtExtensions
     {
         public static void ConfigureJwt(this IServiceCollection services, IConfiguration configurationRoot,
-            Func<JwtIssuerOptions, SecurityKey> signingKey, JwtBearerEvents jwtBearerEvents = null)
+            Func<JwtIssuerOptions, JwtSigningKey> signingKey, JwtBearerEvents jwtBearerEvents = null)
         {
             var jwtAppSettingOptions = configurationRoot.GetSection(nameof(JwtIssuerOptions)).Get<JwtIssuerOptions>();
+
+            var issuerSigningKey = signingKey(jwtAppSettingOptions);
+            
+            services.AddSingleton(issuerSigningKey);
 
             var tokenValidationParameters = new TokenValidationParameters
             {
@@ -23,8 +27,8 @@ namespace ArchitectNow.Web.Configuration
                 ValidAudience = jwtAppSettingOptions.Audience,
 
                 ValidateIssuerSigningKey = true,
-                IssuerSigningKey = signingKey(jwtAppSettingOptions),
-
+                IssuerSigningKey = issuerSigningKey,
+                
                 RequireExpirationTime = true,
                 ValidateLifetime = true,
 

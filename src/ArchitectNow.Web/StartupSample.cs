@@ -14,7 +14,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using SwaggerOptions = ArchitectNow.Web.Models.SwaggerOptions;
-using Microsoft.IdentityModel.Tokens;
 using NJsonSchema;
 
 namespace ArchitectNow.Web
@@ -86,7 +85,7 @@ namespace ArchitectNow.Web
             return provider;
         }
 
-        private SecurityKey ConfigureSecurityKey(JwtIssuerOptions issuerOptions)
+        private JwtSigningKey ConfigureSecurityKey(JwtIssuerOptions issuerOptions)
         {
             var keyString = issuerOptions.Audience;
             var keyBytes = Encoding.Unicode.GetBytes(keyString);

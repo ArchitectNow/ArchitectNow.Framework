@@ -15,7 +15,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
 using NJsonSchema;
 using Serilog;
 
@@ -93,7 +92,7 @@ namespace ArchitectNow.Web.Mongo
             return provider;
         }
 
-        private SecurityKey ConfigureSecurityKey(JwtIssuerOptions issuerOptions)
+        private JwtSigningKey ConfigureSecurityKey(JwtIssuerOptions issuerOptions)
         {
             var keyString = issuerOptions.Audience;
             var keyBytes = Encoding.Unicode.GetBytes(keyString);
