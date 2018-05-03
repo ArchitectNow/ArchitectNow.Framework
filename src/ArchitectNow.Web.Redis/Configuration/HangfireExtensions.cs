@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ArchitectNow.Web.Redis.Configuration
 {
-	static class HangfireExtensions
+	public static class HangfireExtensions
 	{
 		public static void ConfigureHangfire(this IServiceCollection services, string connectionString, Action<RedisStorageOptions> configureRedis = null, Action<IGlobalConfiguration> configureHangfire = null)
 		{
