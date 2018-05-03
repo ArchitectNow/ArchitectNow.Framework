@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ArchitectNow.Web.Sql.Configuration
 {
-	static class HangfireExtensions
+	public static class HangfireExtensions
 	{
 		public static void ConfigureHangfire(this IServiceCollection services, string connectionString, Action<IGlobalConfiguration> configureHangfire = null)
 		{
