@@ -2,7 +2,6 @@
 using System.Linq;
 using ArchitectNow.Web.Models;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 using NJsonSchema;
 using NSwag.AspNetCore;
@@ -10,22 +9,22 @@ using NSwag.SwaggerGeneration.WebApi;
 
 namespace ArchitectNow.Web.Configuration
 {
-    public class SwaggerStartupFilter : IStartupFilter
+    public class SwaggerV2StartupFilter : SwaggerStartupBase<SwaggerOptionsV2, SwaggerUiSettings<WebApiToSwaggerGeneratorSettings>>
     {
-        private readonly ILogger<SwaggerStartupFilter> _logger;
-        protected SwaggerOptions[] Options { get; }
+        private readonly ILogger<SwaggerV2StartupFilter> _logger;
+        protected SwaggerOptionsV2[] Options { get; }
 
-        public SwaggerStartupFilter(ILogger<SwaggerStartupFilter> logger, params SwaggerOptions[] options)
+        public SwaggerV2StartupFilter(ILogger<SwaggerV2StartupFilter> logger, params SwaggerOptionsV2[] options)
         {
             _logger = logger;
             Options = options;
         }
 
-        public Action<IApplicationBuilder> Configure(Action<IApplicationBuilder> next)
+        public override Action<IApplicationBuilder> Configure(Action<IApplicationBuilder> next)
         {
             return builder =>
             {
-                _logger.LogInformation($"Configure Start: {nameof(SwaggerStartupFilter)}");
+                _logger.LogInformation($"Configure Start: {nameof(SwaggerV2StartupFilter)}");
 
                 foreach (var option in Options)
                 {
@@ -44,30 +43,29 @@ namespace ArchitectNow.Web.Configuration
                 }
                 
                 next(builder);
-                _logger.LogInformation($"Configure End: {nameof(SwaggerStartupFilter)}");
+                _logger.LogInformation($"Configure End: {nameof(SwaggerV2StartupFilter)}");
             };
         }
 
-        private void ConfigureSettings(SwaggerUiSettings<WebApiToSwaggerGeneratorSettings> settings, SwaggerOptions option)
+        protected override void ConfigureSettings(SwaggerUiSettings<WebApiToSwaggerGeneratorSettings> settings, SwaggerOptionsV2 optionV2)
         {
-            settings.SwaggerRoute = option.SwaggerRoute;
-            settings.SwaggerUiRoute = option.SwaggerUiRoute;
-            settings.UseJsonEditor = true;
+            settings.SwaggerRoute = optionV2.SwaggerRoute;
+            settings.SwaggerUiRoute = optionV2.SwaggerUiRoute;
             settings.GeneratorSettings.DefaultPropertyNameHandling = PropertyNameHandling.CamelCase;
-            settings.GeneratorSettings.Title = option.Title;
+            settings.GeneratorSettings.Title = optionV2.Title;
             settings.GeneratorSettings.FlattenInheritanceHierarchy = true;
             settings.GeneratorSettings.IsAspNetCore = true;
-
-            foreach (var optionDocumentProcessor in option.DocumentProcessors)
+            
+            foreach (var optionDocumentProcessor in optionV2.DocumentProcessors)
             {
                 settings.GeneratorSettings.DocumentProcessors.Add(optionDocumentProcessor);
             }
 
-            foreach (var operationProcessor in option.OperationProcessors)
+            foreach (var operationProcessor in optionV2.OperationProcessors)
             {
                 settings.GeneratorSettings.OperationProcessors.Add(operationProcessor);
             }
-            var action = option.Configure;
+            var action = optionV2.Configure;
             action?.Invoke(settings);
         }
     }
