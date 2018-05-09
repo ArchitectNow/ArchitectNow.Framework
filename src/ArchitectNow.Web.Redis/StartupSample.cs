@@ -49,10 +49,10 @@ namespace ArchitectNow.Web.Redis
 
             //Register startup filters (order matters)
             services.AddTransient<IStartupFilter, AntiForgeryStartupFilter>();
-            services.AddTransient<IStartupFilter, SwaggerStartupFilter>(serviceProvider =>
+            services.AddTransient<IStartupFilter, SwaggerV2StartupFilter>(serviceProvider =>
             {
-                return new SwaggerStartupFilter( serviceProvider.GetService<ILogger<SwaggerStartupFilter>>(),
-                    new SwaggerOptions
+                return new SwaggerV2StartupFilter( serviceProvider.GetService<ILogger<SwaggerV2StartupFilter>>(),
+                    new SwaggerOptionsV2
                 {
                     Version = "1.0",
                     Title = "API",
