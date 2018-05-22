@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using NSwag;
+using NSwag.AspNetCore;
 using NSwag.SwaggerGeneration.Processors;
 using NSwag.SwaggerGeneration.Processors.Security;
+using NSwag.SwaggerGeneration.WebApi;
 
 namespace ArchitectNow.Web.Models
 {
-    public class SwaggerOptions
+    public class SwaggerOptions<TSettings> where TSettings : SwaggerUiSettingsBase<WebApiToSwaggerGeneratorSettings>
     {
         [SuppressMessage("ReSharper", "UnusedMember.Global")]
         public readonly string DefaultSwaggerRoute = "/docs/v1/swagger.json";
@@ -24,7 +26,7 @@ namespace ArchitectNow.Web.Models
         public string SwaggerUiRoute { get; set; } = "/docs";
         public IEnumerable<Type> Controllers { get; set; }
         public Assembly ControllerAssembly { get; set; } = Assembly.GetEntryAssembly();
-//        public Action<SwaggerUiSettingsBase<WebApiToSwaggerGeneratorSettings>> Configure { get; set; }
+        public Action<TSettings> Configure { get; set; }
 	    
         public IList<IDocumentProcessor> DocumentProcessors { get; set; } = new List<IDocumentProcessor>();
 	    

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using ArchitectNow.Web.Models;
 using Microsoft.AspNetCore.Builder.Internal;
@@ -11,55 +10,55 @@ namespace ArchitectNow.Web.Configuration
 {
     public static class SwaggerExtensions
     {
-        public static void ConfigureSwaggerUi3(this ApplicationBuilder builder, IEnumerable<SwaggerOptions> options, Action<SwaggerUi3Settings<WebApiToSwaggerGeneratorSettings>> configure)
+        public static void ConfigureSwaggerUi3(this ApplicationBuilder builder,
+            IEnumerable<SwaggerOptions<SwaggerUi3Settings<WebApiToSwaggerGeneratorSettings>>> options)
         {
             foreach (var option in options)
             {
-
                 if (option.Controllers?.Any() == true)
                 {
-                    builder.UseSwaggerUi3(option.Controllers, settings => { ConfigureSettings(settings, configure, option); });
+                    builder.UseSwaggerUi3(option.Controllers, settings => { ConfigureSettings(settings, option); });
                 }
                 else
                 {
-                    builder.UseSwaggerUi3(option.ControllerAssembly, settings => { ConfigureSettings(settings, configure, option); });
-                }
-            }
-        }
-        
-        public static void ConfigureSwaggerUi(this ApplicationBuilder builder, IEnumerable<SwaggerOptions> options, Action<SwaggerUiSettings<WebApiToSwaggerGeneratorSettings>> configure)
-        {
-            foreach (var option in options)
-            {
-
-                if (option.Controllers?.Any() == true)
-                {
-                    builder.UseSwaggerUi(option.Controllers, settings => { ConfigureSettings(settings, configure, option); });
-                }
-                else
-                {
-                    builder.UseSwaggerUi(option.ControllerAssembly, settings => { ConfigureSettings(settings, configure, option); });
-                }
-            }
-        }
-        
-        public static void ConfigureSwaggerReDoc(this ApplicationBuilder builder, IEnumerable<SwaggerOptions> options, Action<SwaggerReDocSettings<WebApiToSwaggerGeneratorSettings>> configure)
-        {
-            foreach (var option in options)
-            {
-
-                if (option.Controllers?.Any() == true)
-                {
-                    builder.UseSwaggerReDoc(option.Controllers, settings => { ConfigureSettings(settings, configure, option); });
-                }
-                else
-                {
-                    builder.UseSwaggerReDoc(option.ControllerAssembly, settings => { ConfigureSettings(settings, configure, option); });
+                    builder.UseSwaggerUi3(option.ControllerAssembly, settings => { ConfigureSettings(settings, option); });
                 }
             }
         }
 
-        private static void ConfigureSettings<T>(T settings, Action<T> configure, SwaggerOptions option) where T: SwaggerUiSettingsBase<WebApiToSwaggerGeneratorSettings>
+        public static void ConfigureSwaggerUi(this ApplicationBuilder builder,
+            IEnumerable<SwaggerOptions<SwaggerUiSettings<WebApiToSwaggerGeneratorSettings>>> options)
+        {
+            foreach (var option in options)
+            {
+                if (option.Controllers?.Any() == true)
+                {
+                    builder.UseSwaggerUi(option.Controllers, settings => { ConfigureSettings(settings, option); });
+                }
+                else
+                {
+                    builder.UseSwaggerUi(option.ControllerAssembly, settings => { ConfigureSettings(settings, option); });
+                }
+            }
+        }
+
+        public static void ConfigureSwaggerReDoc(this ApplicationBuilder builder,
+            IEnumerable<SwaggerOptions<SwaggerReDocSettings<WebApiToSwaggerGeneratorSettings>>> options)
+        {
+            foreach (var option in options)
+            {
+                if (option.Controllers?.Any() == true)
+                {
+                    builder.UseSwaggerReDoc(option.Controllers, settings => { ConfigureSettings(settings, option); });
+                }
+                else
+                {
+                    builder.UseSwaggerReDoc(option.ControllerAssembly, settings => { ConfigureSettings(settings, option); });
+                }
+            }
+        }
+
+        private static void ConfigureSettings<T>(T settings, SwaggerOptions<T> option) where T : SwaggerUiSettingsBase<WebApiToSwaggerGeneratorSettings>
         {
             settings.SwaggerRoute = option.SwaggerRoute;
             settings.SwaggerUiRoute = option.SwaggerUiRoute;
@@ -77,8 +76,9 @@ namespace ArchitectNow.Web.Configuration
             {
                 settings.GeneratorSettings.OperationProcessors.Add(operationProcessor);
             }
-            
-            configure?.Invoke(settings);
+
+            var action = option.Configure;
+            action?.Invoke(settings);
         }
     }
 }
