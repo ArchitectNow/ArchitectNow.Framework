@@ -5,14 +5,14 @@ using MongoDB.Driver;
 
 namespace ArchitectNow.Mongo.Db
 {
-    public class MongoDbUtilities : IMongoDbUtilities
+    public abstract class MongoDbUtilities : IMongoDbUtilities
     {
         public string DatabaseName { get; }
         public string ConnectionString { get; }
         private bool _isDisposed;
         private readonly MongoClient _client;
 
-        public MongoDbUtilities(string connectionString, string databaseName)
+        protected MongoDbUtilities(string connectionString, string databaseName)
         {
             DatabaseName = databaseName;
             ConnectionString = connectionString;
