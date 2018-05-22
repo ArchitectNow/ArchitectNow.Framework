@@ -1,6 +1,4 @@
 ﻿using System;
-using ArchitectNow.Mongo.Options;
-using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
@@ -9,55 +7,40 @@ namespace ArchitectNow.Mongo.Db
 {
     public class MongoDbUtilities : IMongoDbUtilities
     {
-	    private readonly MongoOptions _options;
-	    private readonly string _dbName;
+        public string DatabaseName { get; }
+        public string ConnectionString { get; }
         private bool _isDisposed;
         private readonly MongoClient _client;
 
-        public MongoDbUtilities(IOptions<MongoOptions> options )
+        public MongoDbUtilities(string connectionString, string databaseName)
         {
-	        _options = options.Value;
-	        var connectionString = GetConnectionString();
-
+            DatabaseName = databaseName;
+            ConnectionString = connectionString;
+            
+            DatabaseName = databaseName;
+            ConnectionString = connectionString;
+	        
             if (string.IsNullOrEmpty(connectionString))
             {
                 throw new Exception("No DB connection found");
             }
-
+            
+            if (string.IsNullOrEmpty(databaseName))
+            {
+                throw new Exception("No database name found");
+            }
+            
             var pack = new ConventionPack{
                 new EnumRepresentationConvention(BsonType.String),
-				new CamelCaseElementNameConvention()
+                new CamelCaseElementNameConvention()
             };
 
             ConventionRegistry.Register("AN Conventions", pack, t => true);
             MongoDefaults.MaxConnectionIdleTime = TimeSpan.FromMinutes(1);
-            
-            _dbName = GetDatabaseName();
-            
-            if (string.IsNullOrEmpty(_dbName))
-            {
-                throw new Exception("No database name found");
-            }
-
             _client = new MongoClient(connectionString);
         }
 
-        public void CreateCollection(string collectionName)
-        {
-
-        }
-
-        public string GetConnectionString()
-        {
-            return _options.ConnectionString;
-        }
-
-        public string GetDatabaseName()
-        {
-            return _options.DatabaseName;
-        }
-
-        public IMongoDatabase Database => _client.GetDatabase(_dbName);
+        public IMongoDatabase Database => _client.GetDatabase(DatabaseName);
 
 	    public void Dispose()
         {
