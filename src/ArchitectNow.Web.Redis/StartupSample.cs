@@ -15,6 +15,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NJsonSchema;
+using NSwag.AspNetCore;
 using Serilog;
 
 namespace ArchitectNow.Web.Redis
@@ -49,27 +50,7 @@ namespace ArchitectNow.Web.Redis
 
             //Register startup filters (order matters)
             services.AddTransient<IStartupFilter, AntiForgeryStartupFilter>();
-            services.AddTransient<IStartupFilter, SwaggerV2StartupFilter>(serviceProvider =>
-            {
-                return new SwaggerV2StartupFilter( serviceProvider.GetService<ILogger<SwaggerV2StartupFilter>>(),
-                    new SwaggerOptionsV2
-                {
-                    Version = "1.0",
-                    Title = "API",
-                    Description = "API",
-                    Name = "v1",
-                    SwaggerRoute = "/app/docs/v1/swagger.json",
-                    SwaggerUiRoute = "/app/docs",
-                    Configure = settings =>
-                    {
-                        settings.UseJsonEditor = false;
-                        settings.GeneratorSettings.DefaultEnumHandling = EnumHandling.String;
-                        settings.GeneratorSettings.DefaultPropertyNameHandling = PropertyNameHandling.CamelCase;
-                        settings.GeneratorSettings.Version = Assembly.GetEntryAssembly().GetName().Version.ToString();
-                    },
-                });
-            });
-
+            
             //last
             services.AddTransient<IStartupFilter, HangfireStartupFilter>();
 
@@ -107,6 +88,17 @@ namespace ArchitectNow.Web.Redis
             _logger.LogInformation($"{nameof(Configure)} starting...");
 
             //Add custom middleware or use IStartupFilter
+            
+            app.UseSwaggerUi3(settings =>
+            {
+                settings.GeneratorSettings.Title = "API";
+                settings.GeneratorSettings.Description = "API";
+                settings.SwaggerRoute = "/app/docs/v1/swagger.json";
+                settings.SwaggerUiRoute = "/app/docs";
+                settings.GeneratorSettings.DefaultEnumHandling = EnumHandling.String;
+                settings.GeneratorSettings.DefaultPropertyNameHandling = PropertyNameHandling.CamelCase;
+                settings.GeneratorSettings.Version = Assembly.GetEntryAssembly().GetName().Version.ToString();
+            });
             
             appLifetime.ApplicationStopped.Register(() =>
             {
