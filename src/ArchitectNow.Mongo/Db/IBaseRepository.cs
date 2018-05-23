@@ -9,7 +9,7 @@ namespace ArchitectNow.Mongo.Db
      where T : BaseDocument
     {
         Task<bool> DeleteAllAsync();
-        Task<List<T>> GetAllAsync(bool onlyActive = true);
+        Task<List<T>> GetAllAsync();
         Task<T> GetOneAsync(Guid id);
         Task<T> SaveAsync(T item);
         Task<bool> DeleteAsync(Guid id);
