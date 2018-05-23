@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using NJsonSchema;
+using NSwag.AspNetCore;
 
 namespace ArchitectNow.Web
 {
@@ -34,9 +35,9 @@ namespace ArchitectNow.Web
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             _logger.LogInformation($"{nameof(ConfigureServices)} starting...");
-            
+
             services.ConfigureOptions();
-            
+
             services.ConfigureJwt(_configuration, ConfigureSecurityKey);
 
             services.ConfigureApi(new FluentValidationOptions {Enabled = true});
@@ -46,29 +47,8 @@ namespace ArchitectNow.Web
             services.ConfigureCompression();
 
             //Register startup filters (order matters)
-            
+
             services.AddTransient<IStartupFilter, AntiForgeryStartupFilter>();
-            
-            services.AddTransient<IStartupFilter, SwaggerV2StartupFilter>(serviceProvider =>
-            {
-                return new SwaggerV2StartupFilter( serviceProvider.GetService<ILogger<SwaggerV2StartupFilter>>(),
-                    new SwaggerOptionsV2
-                {
-                    Version = "1.0",
-                    Title = "API",
-                    Description = "API",
-                    Name = "v1",
-                    SwaggerRoute = "/app/docs/v1/swagger.json",
-                    SwaggerUiRoute = "/app/docs",
-                    Configure = settings =>
-                    {
-                        settings.UseJsonEditor = false;
-                        settings.GeneratorSettings.DefaultEnumHandling = EnumHandling.String;
-                        settings.GeneratorSettings.DefaultPropertyNameHandling = PropertyNameHandling.CamelCase;
-                        settings.GeneratorSettings.Version = Assembly.GetEntryAssembly().GetName().Version.ToString();
-                    },
-                });
-            });
 
             //last
             services.AddTransient<IStartupFilter, HangfireStartupFilter>();
@@ -101,9 +81,19 @@ namespace ArchitectNow.Web
             _logger.LogInformation($"{nameof(Configure)} starting...");
 
             //Add custom middleware or use IStartupFilter
-            
-            
-            
+
+
+            app.UseSwaggerUi3(settings =>
+            {
+                settings.GeneratorSettings.Title = "API";
+                settings.GeneratorSettings.Description = "API";
+                settings.SwaggerRoute = "/app/docs/v1/swagger.json";
+                settings.SwaggerUiRoute = "/app/docs";
+                settings.GeneratorSettings.DefaultEnumHandling = EnumHandling.String;
+                settings.GeneratorSettings.DefaultPropertyNameHandling = PropertyNameHandling.CamelCase;
+                settings.GeneratorSettings.Version = Assembly.GetEntryAssembly().GetName().Version.ToString();
+            });
+
             appLifetime.ApplicationStopped.Register(() =>
             {
                 Log.CloseAndFlush();
