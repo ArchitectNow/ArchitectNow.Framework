@@ -12,7 +12,6 @@ namespace ArchitectNow.Mongo.Models
 	    protected BaseDocument()
         {
             ValidationErrors = new List<ValidationResult>();
-            IsActive = true;
         }
 
         [BsonId(IdGenerator = typeof(CombGuidGenerator))]
@@ -27,10 +26,7 @@ namespace ArchitectNow.Mongo.Models
         public DateTimeOffset? CreatedDate { get; set; } = DateTime.UtcNow;
 
 	    public DateTimeOffset? UpdatedDate { get; set; } = DateTime.UtcNow;
-
-	    public Guid? OwnerUserId { get; set; }
-        public bool IsActive { get; set; }
-
+	    
         [JsonIgnore]
         [BsonIgnore]
         public List<ValidationResult> ValidationErrors { get; set; }

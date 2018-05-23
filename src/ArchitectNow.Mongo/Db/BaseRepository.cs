@@ -80,13 +80,9 @@ namespace ArchitectNow.Mongo.Db
             return true;
         }
 
-        public virtual Task<List<TModel>> GetAllAsync(bool onlyActive = true)
+        public virtual Task<List<TModel>> GetAllAsync()
         {
-            Task<List<TModel>> results;
-            if (onlyActive)
-                results = GetCollection().Find(x => x.IsActive).ToListAsync();
-            else
-                results = GetCollection().Find(model => true).ToListAsync();
+            var results = GetCollection().Find(model => true).ToListAsync();
 
             return results;
         }
@@ -102,11 +98,7 @@ namespace ArchitectNow.Mongo.Db
         {
             if (item.Id != Guid.Empty)
                 item.UpdatedDate = DateTime.UtcNow;
-
-            if (item.OwnerUserId == null || item.OwnerUserId == Guid.Empty)
-                if (CurrentContext != null && CurrentContext.CurrentUserId != Guid.Empty)
-                    item.OwnerUserId = CurrentContext.CurrentUserId;
-
+            
             var errors = await ValidateObject(item);
 
             if (errors.Any())
@@ -150,9 +142,9 @@ namespace ArchitectNow.Mongo.Db
         /// <summary>
         ///     Configures the indexes.
         /// </summary>
-        public virtual async Task ConfigureIndexes()
+        public virtual Task ConfigureIndexes()
         {
-            await CreateIndex("Id", Builders<TModel>.IndexKeys.Ascending(x => x.Id).Ascending(x => x.IsActive));
+            return Task.Run(() => { });
         }
 
         /// <summary>
