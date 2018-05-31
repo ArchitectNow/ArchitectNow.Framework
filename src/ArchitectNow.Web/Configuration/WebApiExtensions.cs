@@ -1,6 +1,8 @@
-﻿using ArchitectNow.Web.Filters;
+﻿using System;
+using ArchitectNow.Web.Filters;
 using ArchitectNow.Web.Models;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -10,7 +12,7 @@ namespace ArchitectNow.Web.Configuration
 {
 	public static class WebApiExtensions
 	{
-		public static void ConfigureApi(this IServiceCollection services, FluentValidationOptions fluentValidationOptions)
+		public static void ConfigureApi(this IServiceCollection services, FluentValidationOptions fluentValidationOptions, Action<MvcOptions> configureMvc = null)
 		{
 			/*************************
              * IConfiguration is not available yet
@@ -22,6 +24,7 @@ namespace ArchitectNow.Web.Configuration
 				{
 					o.Filters.AddService(typeof(GlobalExceptionFilter));
 					o.ModelValidatorProviders.Clear();
+					configureMvc?.Invoke(o);
 				})
 				.AddJsonOptions(options =>
 				{
