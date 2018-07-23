@@ -37,7 +37,7 @@ namespace ArchitectNow.Mongo.Db
 
             ConventionRegistry.Register("AN Conventions", pack, t => true);
             MongoDefaults.MaxConnectionIdleTime = TimeSpan.FromMinutes(1);
-            _client = new MongoClient(connectionString);
+            _client = new MongoClient(connectionString);            
         }
 
         public IMongoDatabase Database => _client.GetDatabase(DatabaseName);
