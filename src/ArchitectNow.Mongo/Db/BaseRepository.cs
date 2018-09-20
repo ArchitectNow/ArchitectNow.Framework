@@ -14,9 +14,9 @@ using MongoDB.Driver;
 
 namespace ArchitectNow.Mongo.Db
 {
-    //Test notifications
-    public abstract class BaseRepository<TModel, TDataContext> : IBaseRepository<TModel> where TModel : BaseDocument
+    public abstract class BaseRepository<TModel, TDataContext, TId> : IBaseRepository<TModel, TId> where TModel : BaseDocument<TId>
         where TDataContext : MongoDataContext
+        where TId : IComparable<TId>, IEquatable<TId>
     {
         private readonly IValidator<TModel> _validator;
 
@@ -87,27 +87,32 @@ namespace ArchitectNow.Mongo.Db
             return results;
         }
 
-        public virtual Task<TModel> GetOneAsync(Guid id)
+        protected abstract FilterDefinition<TModel> AreIdsEqual(TId id);
+        protected abstract TId CreateNewId();
+
+        public virtual Task<TModel> GetOneAsync(TId id)
         {
-            var result = GetCollection().Find(x => x.Id == id).FirstOrDefaultAsync();
+            var filter = AreIdsEqual(id);
+
+            var result = GetCollection().Find(filter).FirstOrDefaultAsync();
 
             return result;
         }
 
         public virtual async Task<TModel> SaveAsync(TModel item)
         {
-            if (item.Id != Guid.Empty)
+            if (!Equals(item.Id, default(TId)))
                 item.UpdatedDate = DateTime.UtcNow;
-            
+
             var errors = await ValidateObject(item);
 
             if (errors.Any())
                 throw new ValidationException("A validation error has occured saving item of type '" + item.GetType(),
                     errors);
 
-            if (item.Id == Guid.Empty)
+            if (Equals(item.Id, default(TId)))
             {
-                item.Id = Guid.NewGuid();
+                item.Id = CreateNewId();
                 await GetCollection().InsertOneAsync(item);
             }
             else
@@ -123,7 +128,7 @@ namespace ArchitectNow.Mongo.Db
             return item;
         }
 
-        public virtual async Task<bool> DeleteAsync(Guid id)
+        public virtual async Task<bool> DeleteAsync(TId id)
         {
             var filter = Builders<TModel>.Filter.Eq("_id", id);
 

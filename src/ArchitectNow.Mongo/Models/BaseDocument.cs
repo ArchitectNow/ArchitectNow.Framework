@@ -2,22 +2,20 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Bson.Serialization.IdGenerators;
 using Newtonsoft.Json;
 
 namespace ArchitectNow.Mongo.Models
 {
-    public abstract class BaseDocument
+    public abstract class BaseDocument<TId> where TId: IComparable<TId>, IEquatable<TId>
     {
-	    protected BaseDocument()
+        protected BaseDocument()
         {
             ValidationErrors = new List<ValidationResult>();
         }
-
-        [BsonId(IdGenerator = typeof(CombGuidGenerator))]
-        public Guid Id { get; set; }
-
-	    /// <summary>
+        
+        public abstract TId Id { get; set; }
+        
+        /// <summary>
         /// Gets or sets the created date.
         /// </summary>
         /// <value>
@@ -25,7 +23,7 @@ namespace ArchitectNow.Mongo.Models
         /// </value>
         public DateTimeOffset? CreatedDate { get; set; } = DateTime.UtcNow;
 
-	    public DateTimeOffset? UpdatedDate { get; set; } = DateTime.UtcNow;
+        public DateTimeOffset? UpdatedDate { get; set; } = DateTime.UtcNow;
 	    
         [JsonIgnore]
         [BsonIgnore]
