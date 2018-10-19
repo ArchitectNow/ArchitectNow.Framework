@@ -13,6 +13,7 @@ namespace ArchitectNow.Mongo.Models
             ValidationErrors = new List<ValidationResult>();
         }
         
+        [BsonIgnore]
         public abstract TId Id { get; set; }
         
         /// <summary>

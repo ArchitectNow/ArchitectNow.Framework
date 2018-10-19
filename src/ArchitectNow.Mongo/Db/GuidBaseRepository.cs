@@ -24,4 +24,4 @@ namespace ArchitectNow.Mongo.Db
 
         protected override Guid CreateNewId() => Guid.NewGuid();
     }
-}
+}    
