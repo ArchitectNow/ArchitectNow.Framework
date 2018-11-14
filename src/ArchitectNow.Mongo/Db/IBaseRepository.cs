@@ -5,14 +5,15 @@ using ArchitectNow.Mongo.Models;
 
 namespace ArchitectNow.Mongo.Db
 {
-    public interface IBaseRepository<T> : IBaseRepository  
-     where T : BaseDocument
+    public interface IBaseRepository<T, TId> : IBaseRepository  
+     where T : BaseDocument<TId>
+     where TId: IComparable<TId>
     {
         Task<bool> DeleteAllAsync();
         Task<List<T>> GetAllAsync();
-        Task<T> GetOneAsync(Guid id);
+        Task<T> GetOneAsync(TId id);
         Task<T> SaveAsync(T item);
-        Task<bool> DeleteAsync(Guid id);
+        Task<bool> DeleteAsync(TId id);
         Task<bool> DeleteAsync(T item);
     }
 
