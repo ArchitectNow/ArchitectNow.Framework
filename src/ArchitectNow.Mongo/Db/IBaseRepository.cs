@@ -7,7 +7,7 @@ namespace ArchitectNow.Mongo.Db
 {
     public interface IBaseRepository<T, TId> : IBaseRepository  
      where T : BaseDocument<TId>
-     where TId: IComparable<TId>, IEquatable<TId>
+     where TId: IComparable<TId>
     {
         Task<bool> DeleteAllAsync();
         Task<List<T>> GetAllAsync();

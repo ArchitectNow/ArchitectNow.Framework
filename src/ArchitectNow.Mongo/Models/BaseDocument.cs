@@ -6,13 +6,14 @@ using Newtonsoft.Json;
 
 namespace ArchitectNow.Mongo.Models
 {
-    public abstract class BaseDocument<TId> where TId: IComparable<TId>, IEquatable<TId>
+    public abstract class BaseDocument<TId> where TId: IComparable<TId>
     {
         protected BaseDocument()
         {
             ValidationErrors = new List<ValidationResult>();
         }
         
+        [BsonIgnore]
         public abstract TId Id { get; set; }
         
         /// <summary>

@@ -12,7 +12,7 @@ namespace ArchitectNow.Web.Configuration
 {
 	public static class WebApiExtensions
 	{
-		public static void ConfigureApi(this IServiceCollection services, FluentValidationOptions fluentValidationOptions, Action<MvcOptions> configureMvc = null)
+		public static void ConfigureApi(this IServiceCollection services, FluentValidationOptions fluentValidationOptions, Action<MvcOptions> configureMvc = null, Action<MvcJsonOptions> configureJson = null)
 		{
 			/*************************
              * IConfiguration is not available yet
@@ -38,6 +38,8 @@ namespace ArchitectNow.Web.Configuration
 						new IsoDateTimeConverter(),
 						new StringEnumConverter(true)
 					};
+					
+					configureJson?.Invoke(options);
 				});
 
 

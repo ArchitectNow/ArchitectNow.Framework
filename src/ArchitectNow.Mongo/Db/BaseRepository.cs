@@ -16,7 +16,7 @@ namespace ArchitectNow.Mongo.Db
 {
     public abstract class BaseRepository<TModel, TDataContext, TId> : IBaseRepository<TModel, TId> where TModel : BaseDocument<TId>
         where TDataContext : MongoDataContext
-        where TId : IComparable<TId>, IEquatable<TId>
+        where TId : IComparable<TId>
     {
         private readonly IValidator<TModel> _validator;
 
