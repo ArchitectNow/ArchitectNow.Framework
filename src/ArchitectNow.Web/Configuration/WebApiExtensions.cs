@@ -4,7 +4,6 @@ using ArchitectNow.Web.Models;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 
@@ -33,11 +32,8 @@ namespace ArchitectNow.Web.Configuration
 					var camelCasePropertyNamesContractResolver = new CamelCasePropertyNamesContractResolver();
 
 					settings.ContractResolver = camelCasePropertyNamesContractResolver;
-					settings.Converters = new JsonConverter[]
-					{
-						new IsoDateTimeConverter(),
-						new StringEnumConverter(true)
-					};
+					settings.Converters.Add(new IsoDateTimeConverter());
+					settings.Converters.Add(new StringEnumConverter(true));
 					
 					configureJson?.Invoke(options);
 				});
