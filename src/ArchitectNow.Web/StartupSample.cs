@@ -9,6 +9,7 @@ using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -40,7 +41,10 @@ namespace ArchitectNow.Web
 
             services.ConfigureJwt(_configuration, ConfigureSecurityKey);
 
-            services.ConfigureApi(new FluentValidationOptions {Enabled = true});
+            services.ConfigureApi(new FluentValidationOptions {Enabled = true}, configureMvcBuilder: builder =>
+            {
+                builder.SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            });
 
             services.ConfigureAutomapper(expression => { });
 

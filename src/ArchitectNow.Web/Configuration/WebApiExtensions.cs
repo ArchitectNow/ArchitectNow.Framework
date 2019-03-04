@@ -11,7 +11,7 @@ namespace ArchitectNow.Web.Configuration
 {
 	public static class WebApiExtensions
 	{
-		public static void ConfigureApi(this IServiceCollection services, FluentValidationOptions fluentValidationOptions, Action<MvcOptions> configureMvc = null, Action<MvcJsonOptions> configureJson = null)
+		public static void ConfigureApi(this IServiceCollection services, FluentValidationOptions fluentValidationOptions, Action<MvcOptions> configureMvc = null, Action<MvcJsonOptions> configureJson = null, Action<IMvcBuilder> configureMvcBuilder = null)
 		{
 			/*************************
              * IConfiguration is not available yet
@@ -38,7 +38,8 @@ namespace ArchitectNow.Web.Configuration
 					configureJson?.Invoke(options);
 				});
 
-
+			configureMvcBuilder?.Invoke(mvcBuilder);
+			
 			if (fluentValidationOptions.Enabled)
 			{
 				mvcBuilder.AddFluentValidation(configuration => fluentValidationOptions.Configure?.Invoke(configuration));
