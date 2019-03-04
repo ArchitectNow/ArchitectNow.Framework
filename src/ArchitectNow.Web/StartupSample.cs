@@ -15,7 +15,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using NJsonSchema;
-using NSwag.AspNetCore;
 
 namespace ArchitectNow.Web
 {
@@ -91,8 +90,8 @@ namespace ArchitectNow.Web
             {
                 settings.GeneratorSettings.Title = "API";
                 settings.GeneratorSettings.Description = "API";
-                settings.SwaggerRoute = "/app/docs/v1/swagger.json";
-                settings.SwaggerUiRoute = "/app/docs";
+                settings.DocumentPath = "/app/docs/v1/swagger.json";
+                settings.Path = "/app/docs";
                 settings.GeneratorSettings.DefaultEnumHandling = EnumHandling.String;
                 settings.GeneratorSettings.DefaultPropertyNameHandling = PropertyNameHandling.CamelCase;
                 settings.GeneratorSettings.Version = Assembly.GetEntryAssembly().GetName().Version.ToString();
