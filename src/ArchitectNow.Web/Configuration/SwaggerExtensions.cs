@@ -60,8 +60,8 @@ namespace ArchitectNow.Web.Configuration
 
         private static void ConfigureSettings<T>(T settings, SwaggerOptions<T> option) where T : SwaggerUiSettingsBase<WebApiToSwaggerGeneratorSettings>
         {
-            settings.SwaggerRoute = option.SwaggerRoute;
-            settings.SwaggerUiRoute = option.SwaggerUiRoute;
+            settings.DocumentPath = option.SwaggerRoute;
+            settings.Path = option.SwaggerUiRoute;
             settings.GeneratorSettings.DefaultPropertyNameHandling = PropertyNameHandling.CamelCase;
             settings.GeneratorSettings.Title = option.Title;
             settings.GeneratorSettings.FlattenInheritanceHierarchy = true;
