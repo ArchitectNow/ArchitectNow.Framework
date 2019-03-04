@@ -4,7 +4,6 @@ using ArchitectNow.Web.Models;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 
@@ -12,7 +11,7 @@ namespace ArchitectNow.Web.Configuration
 {
 	public static class WebApiExtensions
 	{
-		public static void ConfigureApi(this IServiceCollection services, FluentValidationOptions fluentValidationOptions, Action<MvcOptions> configureMvc = null, Action<MvcJsonOptions> configureJson = null)
+		public static void ConfigureApi(this IServiceCollection services, FluentValidationOptions fluentValidationOptions, Action<MvcOptions> configureMvc = null, Action<MvcJsonOptions> configureJson = null, Action<IMvcBuilder> configureMvcBuilder = null)
 		{
 			/*************************
              * IConfiguration is not available yet
@@ -33,16 +32,14 @@ namespace ArchitectNow.Web.Configuration
 					var camelCasePropertyNamesContractResolver = new CamelCasePropertyNamesContractResolver();
 
 					settings.ContractResolver = camelCasePropertyNamesContractResolver;
-					settings.Converters = new JsonConverter[]
-					{
-						new IsoDateTimeConverter(),
-						new StringEnumConverter(true)
-					};
+					settings.Converters.Add(new IsoDateTimeConverter());
+					settings.Converters.Add(new StringEnumConverter(true));
 					
 					configureJson?.Invoke(options);
 				});
 
-
+			configureMvcBuilder?.Invoke(mvcBuilder);
+			
 			if (fluentValidationOptions.Enabled)
 			{
 				mvcBuilder.AddFluentValidation(configuration => fluentValidationOptions.Configure?.Invoke(configuration));
