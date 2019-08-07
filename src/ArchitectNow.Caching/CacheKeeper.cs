@@ -27,10 +27,18 @@ namespace ArchitectNow.Caching
                 return;
             }
 
+            var inMemoryExpirationInSeconds = cachingOptions.Value.InMemoryExpirationInSeconds < 0
+                ? CachingConstants.InMemoryDefaultExpirationInSeconds
+                : cachingOptions.Value.InMemoryExpirationInSeconds;
+
+            var redisExpirationInSeconds = redisOptions.Value.ExpirationInSeconds < 0
+                ? CachingConstants.RedisDefaultExpirationInSeconds
+                : redisOptions.Value.ExpirationInSeconds;
+
             _inMemory = CacheFactory.Build<T>(
                 s => s
                     .WithDictionaryHandle()
-                    .WithExpiration(ExpirationMode.Sliding, TimeSpan.FromSeconds(5)));
+                    .WithExpiration(ExpirationMode.Sliding, TimeSpan.FromSeconds(inMemoryExpirationInSeconds)));
 
             var multiplexer = Create();
 
@@ -65,10 +73,11 @@ namespace ArchitectNow.Caching
                     s
                         .WithJsonSerializer(jsonSerializerSettings, jsonSerializerSettings)
                         .WithDictionaryHandle()
-                        .WithExpiration(ExpirationMode.Absolute, TimeSpan.FromMinutes(30))
+                        .WithExpiration(ExpirationMode.Absolute, TimeSpan.FromSeconds(inMemoryExpirationInSeconds))
                         .And
                         .WithRedisConfiguration("redis", multiplexer)
-                        .WithRedisCacheHandle("redis");
+                        .WithRedisCacheHandle("redis")
+                        .WithExpiration(ExpirationMode.Absolute, TimeSpan.FromSeconds(redisExpirationInSeconds));
                 });
         }
 
