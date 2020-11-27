@@ -8,15 +8,13 @@ using ArchitectNow.Web.Configuration;
 using ArchitectNow.Web.Models;
 using ArchitectNow.Web.Mongo.Configuration;
 using Autofac;
-using Autofac.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NJsonSchema;
-using NSwag.AspNetCore;
 using Serilog;
 
 namespace ArchitectNow.Web.Mongo
@@ -25,8 +23,6 @@ namespace ArchitectNow.Web.Mongo
     {
         private readonly ILogger<StartupSample> _logger;
         private readonly IConfiguration _configuration;
-        private IContainer _applicationContainer;
-
         public StartupSample(ILogger<StartupSample> logger, IConfiguration configuration)
         {
             _logger = logger;
@@ -35,7 +31,7 @@ namespace ArchitectNow.Web.Mongo
 
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit http://go.microsoft.com/fwlink/?LinkID=398940
-        public IServiceProvider ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(IServiceCollection services)
         {
             _logger.LogInformation($"{nameof(ConfigureServices)} starting...");
             
@@ -56,21 +52,8 @@ namespace ArchitectNow.Web.Mongo
             services.AddTransient<IStartupFilter, HangfireStartupFilter>();
 
 	        services.ConfigureHangfire( _configuration["mongo:connectionString"], _configuration["mongo:connectionString"], configuration => { });
-	        
-            //last
-            _applicationContainer = services.CreateAutofacContainer((builder, serviceCollection) =>
-            {
-	            builder.RegisterModule<WebModule>();
-	            builder.RegisterModule<ServicesModule>();
-	            builder.RegisterModule<MongoModule>();
-            });
-
-            // Create the IServiceProvider based on the container.
-            var provider = new AutofacServiceProvider(_applicationContainer);
-
+            
             _logger.LogInformation($"{nameof(ConfigureServices)} complete...");
-
-            return provider;
         }
 
         private JwtSigningKey ConfigureSecurityKey(JwtIssuerOptions issuerOptions)
@@ -83,31 +66,32 @@ namespace ArchitectNow.Web.Mongo
 
         public void Configure(
             IApplicationBuilder app,
-            IApplicationLifetime appLifetime,
-            IAntiforgery antiforgery,
-            IConfiguration configuration)
+            IHostApplicationLifetime appLifetime)
         {
             _logger.LogInformation($"{nameof(Configure)} starting...");
 
             //Add custom middleware or use IStartupFilter
-            app.UseSwaggerUi3(settings =>
-            {
-                settings.GeneratorSettings.Title = "API";
-                settings.GeneratorSettings.Description = "API";
-                settings.DocumentPath = "/app/docs/v1/swagger.json";
-                settings.Path = "/app/docs";
-                settings.GeneratorSettings.DefaultEnumHandling = EnumHandling.String;
-                settings.GeneratorSettings.DefaultPropertyNameHandling = PropertyNameHandling.CamelCase;
-                settings.GeneratorSettings.Version = Assembly.GetEntryAssembly().GetName().Version.ToString();
-            });
+            // app.UseSwaggerUi3(settings =>
+            // {
+            //     settings.GeneratorSettings.Title = "API";
+            //     settings.GeneratorSettings.Description = "API";
+            //     settings.DocumentPath = "/app/docs/v1/swagger.json";
+            //     settings.Path = "/app/docs";
+            //     settings.GeneratorSettings.DefaultEnumHandling = EnumHandling.String;
+            //     settings.GeneratorSettings.DefaultPropertyNameHandling = PropertyNameHandling.CamelCase;
+            //     settings.GeneratorSettings.Version = Assembly.GetEntryAssembly().GetName().Version.ToString();
+            // });
             
-            appLifetime.ApplicationStopped.Register(() =>
-            {
-                Log.CloseAndFlush();
-                _applicationContainer.Dispose();
-            });
+            appLifetime.ApplicationStopped.Register(Log.CloseAndFlush);
 
             _logger.LogInformation($"{nameof(Configure)} complete...");
+        }
+        public void ConfigureContainer(ContainerBuilder builder)
+        {
+            builder.CreateAutofacContainer();
+            builder.RegisterModule<WebModule>();
+            builder.RegisterModule<ServicesModule>();
+            builder.RegisterModule<MongoModule>();
         }
     }
 }

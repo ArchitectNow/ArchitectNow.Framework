@@ -10,10 +10,10 @@ namespace ArchitectNow.Web.Services
 {
     public class ExceptionResultBuilder : IExceptionResultBuilder
     {
-	    private readonly IHostingEnvironment _hostingEnvironment;
+	    private readonly IWebHostEnvironment _hostingEnvironment;
 	    private readonly ILogger<ExceptionResultBuilder> _logger;
 
-	    public ExceptionResultBuilder(IHostingEnvironment hostingEnvironment, ILogger<ExceptionResultBuilder> logger)
+	    public ExceptionResultBuilder(IWebHostEnvironment hostingEnvironment, ILogger<ExceptionResultBuilder> logger)
 	    {
 		    _hostingEnvironment = hostingEnvironment;
 		    _logger = logger;
@@ -50,7 +50,7 @@ namespace ArchitectNow.Web.Services
                 }
             }
 
-	        return CreateActionResult(content, message, stackTrace, statusCode, exception);
+	        return CreateActionResult(content ?? string.Empty, message, stackTrace ?? string.Empty, statusCode, exception);
         }
 
 	    protected virtual IActionResult CreateActionResult(string content, string message, string stackTrace, int statusCode, Exception exception)
