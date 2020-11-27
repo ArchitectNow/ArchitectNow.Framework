@@ -10,43 +10,5 @@ namespace ArchitectNow.Web.Configuration
 {
     public static class SwaggerExtensions
     {
-        public static void ConfigureSwaggerUi3(this ApplicationBuilder builder,
-            IEnumerable<SwaggerOptions<SwaggerUi3Settings<WebApiToSwaggerGeneratorSettings>>> options)
-        {
-            foreach (var option in options)
-            {
-                if (option.Controllers?.Any() == true)
-                {
-                    builder.UseSwaggerUi3(settings => { ConfigureSettings(settings, option); });
-                }
-                else
-                {
-                    builder.UseSwaggerUi3(settings => { ConfigureSettings(settings, option); });
-                }
-            }
-        }
-
-        private static void ConfigureSettings<T>(T settings, SwaggerOptions<T> option) where T : SwaggerUiSettingsBase<WebApiToSwaggerGeneratorSettings>
-        {
-            settings.DocumentPath = option.SwaggerRoute;
-            settings.Path = option.SwaggerUiRoute;
-            settings.GeneratorSettings.DefaultPropertyNameHandling = PropertyNameHandling.CamelCase;
-            settings.GeneratorSettings.Title = option.Title;
-            settings.GeneratorSettings.FlattenInheritanceHierarchy = true;
-            settings.GeneratorSettings.IsAspNetCore = true;
-
-            foreach (var optionDocumentProcessor in option.DocumentProcessors)
-            {
-                settings.GeneratorSettings.DocumentProcessors.Add(optionDocumentProcessor);
-            }
-
-            foreach (var operationProcessor in option.OperationProcessors)
-            {
-                settings.GeneratorSettings.OperationProcessors.Add(operationProcessor);
-            }
-
-            var action = option.Configure;
-            action?.Invoke(settings);
-        }
     }
 }
