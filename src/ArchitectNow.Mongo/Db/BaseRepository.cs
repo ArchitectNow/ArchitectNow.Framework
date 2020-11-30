@@ -118,7 +118,7 @@ namespace ArchitectNow.Mongo.Db
             else
             {
                 var filter = Builders<TModel>.Filter.Eq("_id", item.Id);
-                await GetCollection().ReplaceOneAsync(filter, item, new UpdateOptions {IsUpsert = true});
+                await GetCollection().ReplaceOneAsync(filter, item, new ReplaceOptions() {IsUpsert = true});
             }
 
             Logger.LogInformation(EventIds.Update, "Entity Saved to {CollectionName}: \'{Id}\' - {@item}",
@@ -158,7 +158,7 @@ namespace ArchitectNow.Mongo.Db
         /// <returns></returns>
         protected IMongoCollection<TModel> GetCollection()
         {
-            return _collection ?? (_collection = DbUtilities.Database.GetCollection<TModel>(CollectionName));
+            return _collection ??= DbUtilities.Database.GetCollection<TModel>(CollectionName);
         }
 
 

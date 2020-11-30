@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <TargetFramework>net5.0</TargetFramework>
     <Authors>ArchitectNow</Authors>
     <Company>ArchitectNow</Company>
     <Product>ArchitectNow.Web.Models</Product>
@@ -9,7 +9,7 @@
     <PackageIconUrl>https://secure.gravatar.com/avatar/83fed82c32dc5424b4245cfc03d57b39?s=32&amp;r=g&amp;d=retro</PackageIconUrl>
     <RepositoryUrl>https://github.com/ArchitectNow/ArchitectNow.Framework</RepositoryUrl>
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
-    <Copyright>Copyright © 2014-2018 ArchitectNow</Copyright>
+    <Copyright>Copyright © 2014-2021 ArchitectNow</Copyright>
     <PackageLicenseUrl>https://github.com/ArchitectNow/ArchitectNow.Framework/blob/master/LICENSE</PackageLicenseUrl>
     <Description>ArchitectNow Framework - Models</Description>
   </PropertyGroup>
@@ -20,9 +20,9 @@
     <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Options" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="5.0.0" />
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="5.4.0" />    
     <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
   </ItemGroup>

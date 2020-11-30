@@ -2,9 +2,10 @@
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Reflection;
-using Microsoft.AspNetCore;
+using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Events;
 
@@ -15,7 +16,7 @@ namespace ArchitectNow.Web
         [SuppressMessage("ReSharper", "AssignNullToNotNullAttribute")]
         public int Run(string[] args, Action<LoggerConfiguration> configureLogger)
         {
-            var baseDir = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+            var baseDir = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
             var logPath = Path.Combine(baseDir, "logs");
             if (!Directory.Exists(logPath))
                 Directory.CreateDirectory(logPath);
@@ -50,28 +51,34 @@ namespace ArchitectNow.Web
             }
         }
 
-        private IWebHost BuildWebHost(string[] args)
+        private IHost BuildWebHost(string[] args)
         {
             var webHostBuilder = CreateWebHostBuilder(args);
             return webHostBuilder
                 .Build();
         }
 
-        protected virtual IWebHostBuilder CreateWebHostBuilder(string[] args)
+        protected virtual IHostBuilder CreateWebHostBuilder(string[] args)
         {
             //pulls in environment from cli args or env vars
-            var builder = new ConfigurationBuilder()
+            var configBuilder = new ConfigurationBuilder()
                 .AddEnvironmentVariables()
                 .AddCommandLine(args);
 
-            var configuration = builder.Build();
+            var configuration = configBuilder.Build();
 
             //https://github.com/aspnet/MetaPackages/blob/633cb681493c0958a9d215624c173db29e20c23d/src/Microsoft.AspNetCore/WebHost.cs
 
-            var webHostBuilder = WebHost.CreateDefaultBuilder(args)
-                .UseConfiguration(configuration)
-                .UseStartup<TStartup>()
-                .UseSerilog(Log.Logger);
+            // Using generic Host here because it allows us to inject a custom service provider for DI
+            var webHostBuilder = Host.CreateDefaultBuilder(args)
+                .UseServiceProviderFactory(new AutofacServiceProviderFactory())
+                .ConfigureWebHostDefaults(builder =>
+                {
+                    builder
+                        .UseStartup<TStartup>()
+                        .UseConfiguration(configuration)
+                        .UseSerilog(Log.Logger);
+                });
             return webHostBuilder;
         }
     }

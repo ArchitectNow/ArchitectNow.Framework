@@ -6,15 +6,14 @@ using ArchitectNow.Web.Configuration;
 using ArchitectNow.Web.Models;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
-using NJsonSchema;
 
 namespace ArchitectNow.Web
 {
@@ -22,17 +21,19 @@ namespace ArchitectNow.Web
     {
         private readonly ILogger<StartupSample> _logger;
         private readonly IConfiguration _configuration;
-        private IContainer _applicationContainer;
-
-        public StartupSample(ILogger<StartupSample> logger, IConfiguration configuration)
+        private readonly IWebHostEnvironment _env;
+        private ILifetimeScope _container;
+        
+        public StartupSample(ILogger<StartupSample> logger, IConfiguration configuration,  IWebHostEnvironment env)
         {
             _logger = logger;
+            _env = env;
             _configuration = configuration;
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit http://go.microsoft.com/fwlink/?LinkID=398940
-        public IServiceProvider ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(IServiceCollection services)
         {
             _logger.LogInformation($"{nameof(ConfigureServices)} starting...");
 
@@ -42,7 +43,7 @@ namespace ArchitectNow.Web
 
             services.ConfigureApi(new FluentValidationOptions {Enabled = true}, configureMvcBuilder: builder =>
             {
-                builder.SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+                builder.SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
             });
 
             services.ConfigureAutomapper(expression => { });
@@ -56,15 +57,7 @@ namespace ArchitectNow.Web
             //last
             services.AddTransient<IStartupFilter, HangfireStartupFilter>();
 
-            //last
-            _applicationContainer = services.CreateAutofacContainer((builder, servicesCollection) => { });
-
-            // Create the IServiceProvider based on the container.
-            var provider = new AutofacServiceProvider(_applicationContainer);
-
             _logger.LogInformation($"{nameof(ConfigureServices)} complete...");
-
-            return provider;
         }
 
         private JwtSigningKey ConfigureSecurityKey(JwtIssuerOptions issuerOptions)
@@ -77,14 +70,16 @@ namespace ArchitectNow.Web
 
         public void Configure(
             IApplicationBuilder app,
-            IApplicationLifetime appLifetime,
-            IAntiforgery antiforgery,
-            IConfiguration configuration)
+            IHostApplicationLifetime applicationLifetime,
+            IWebHostEnvironment env)
         {
             _logger.LogInformation($"{nameof(Configure)} starting...");
-
-            //Add custom middleware or use IStartupFilter
-
+            // new way to get the container at a runtime
+            _container = app.ApplicationServices.GetAutofacRoot();
+            
+            app.UseStaticFiles();
+            app.UseCors("DefaultCors");
+            app.UseCookiePolicy();
 
             app.UseSwaggerUi3(settings =>
             {
@@ -92,18 +87,24 @@ namespace ArchitectNow.Web
                 settings.GeneratorSettings.Description = "API";
                 settings.DocumentPath = "/app/docs/v1/swagger.json";
                 settings.Path = "/app/docs";
-                settings.GeneratorSettings.DefaultEnumHandling = EnumHandling.String;
-                settings.GeneratorSettings.DefaultPropertyNameHandling = PropertyNameHandling.CamelCase;
                 settings.GeneratorSettings.Version = Assembly.GetEntryAssembly().GetName().Version.ToString();
             });
 
-            appLifetime.ApplicationStopped.Register(() =>
+            app.UseRouting();
+            app.UseAuthentication().UseAuthorization();
+
+            app.UseEndpoints(ep => ep.MapControllers());
+            _logger.LogInformation($"{nameof(Configure)} complete...");
+            
+            applicationLifetime.ApplicationStopped.Register(() =>
             {
                 Log.CloseAndFlush();
-                _applicationContainer.Dispose();
+                _container.Dispose();
             });
-
-            _logger.LogInformation($"{nameof(Configure)} complete...");
+        }
+        public void ConfigureContainer(ContainerBuilder builder)
+        {
+            builder.CreateAutofacContainer(); // add any modules and DI code here
         }
     }
 }

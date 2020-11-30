@@ -1,27 +1,16 @@
-using System;
 using Autofac;
-using Autofac.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace ArchitectNow.Web.Configuration
 {
 	public static class AutofacExtensions
 	{
-		public static IContainer CreateAutofacContainer(this IServiceCollection services, Action<ContainerBuilder, IServiceCollection> additionalAction, params Module[] modules)
+		public static void CreateAutofacContainer(this ContainerBuilder container, params Module[] modules)
 		{
-			var builder = new ContainerBuilder();
-			
-			builder.RegisterModule<WebModule>();
+			container.RegisterModule<WebModule>();
 			foreach (var module in modules)
 			{
-				builder.RegisterModule(module);
+				container.RegisterModule(module);
 			}
-
-			additionalAction?.Invoke(builder, services);
-
-			builder.Populate(services);
-			
-			return builder.Build();
 		}
 	}
 }
