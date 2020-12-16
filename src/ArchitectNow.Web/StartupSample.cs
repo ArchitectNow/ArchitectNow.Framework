@@ -83,11 +83,8 @@ namespace ArchitectNow.Web
 
             app.UseSwaggerUi3(settings =>
             {
-                settings.GeneratorSettings.Title = "API";
-                settings.GeneratorSettings.Description = "API";
                 settings.DocumentPath = "/app/docs/v1/swagger.json";
                 settings.Path = "/app/docs";
-                settings.GeneratorSettings.Version = Assembly.GetEntryAssembly().GetName().Version.ToString();
             });
 
             app.UseRouting();
